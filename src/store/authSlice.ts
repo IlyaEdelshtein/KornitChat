@@ -52,12 +52,17 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout, clearError } =
-  authSlice.actions;
+export const {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  logout: logoutAction,
+  clearError,
+} = authSlice.actions;
 
 // Thunk для логина
 export const loginUser = (username: string, password: string) => {
-  return (dispatch: any) => {
+  return (dispatch: any, getState: any) => {
     dispatch(loginStart());
 
     // Simulate API delay
@@ -68,6 +73,13 @@ export const loginUser = (username: string, password: string) => {
         dispatch(loginFailure('Invalid username or password'));
       }
     }, 500);
+  };
+};
+
+// Thunk для выхода
+export const logout = () => {
+  return (dispatch: any) => {
+    dispatch(logoutAction());
   };
 };
 

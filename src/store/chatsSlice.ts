@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Chat, ChatsState } from '../types';
 import { generateId } from '../utils/generateId';
+import { loginSuccess, logoutAction } from './authSlice';
 import dayjs from 'dayjs';
 
 const initialState: ChatsState = {
@@ -86,6 +87,23 @@ const chatsSlice = createSlice({
         state.byId[chatId].updatedAt = dayjs().toISOString();
       }
     },
+
+    clearCurrentChat: (state) => {
+      state.currentChatId = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginSuccess, (state) => {
+        // Сбрасываем текущий чат при логине
+        state.currentChatId = null;
+      })
+      .addCase(logoutAction, (state) => {
+        // Очищаем все чаты при выходе
+        state.byId = {};
+        state.allIds = [];
+        state.currentChatId = null;
+      });
   },
 });
 
@@ -96,6 +114,7 @@ export const {
   setChatTitle,
   touchChatUpdated,
   addMessageToChat,
+  clearCurrentChat,
 } = chatsSlice.actions;
 
 export default chatsSlice.reducer;

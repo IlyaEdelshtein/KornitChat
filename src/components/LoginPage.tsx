@@ -17,6 +17,7 @@ import {
   Login as LoginIcon,
   Chat as ChatIcon,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
 import { loginUser, clearError } from '../store/authSlice';
 
@@ -26,13 +27,21 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { error } = useAppSelector((state) => state.auth);
+  const { error, isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     // Clear any existing errors when component mounts
     dispatch(clearError());
   }, [dispatch]);
+
+  useEffect(() => {
+    // Redirect to base chat route after successful login
+    if (isAuthenticated) {
+      navigate('/chat', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

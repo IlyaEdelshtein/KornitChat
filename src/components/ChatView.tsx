@@ -30,16 +30,9 @@ export default function ChatView() {
   // Handle chat navigation
   useEffect(() => {
     if (!chatId) {
-      // No specific chat in URL, check if we have chats
-      if (currentChatId && chatsById[currentChatId]) {
-        navigate(`/chat/${currentChatId}`, { replace: true });
-      } else if (Object.keys(chatsById).length > 0) {
-        // There are chats but no current one, pick the first one
-        const firstChatId = Object.keys(chatsById)[0];
-        dispatch(setCurrentChat(firstChatId));
-        navigate(`/chat/${firstChatId}`, { replace: true });
-      }
-      // If no chats exist, stay on /chat and show empty state
+      // No specific chat in URL
+      // After login, currentChatId is null, so we should show empty state
+      // Don't automatically navigate to existing chats
       return;
     }
 

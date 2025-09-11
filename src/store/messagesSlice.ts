@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Message, MessagesState } from '../types';
 import { generateId } from '../utils/generateId';
+import { logoutAction } from './authSlice';
 import dayjs from 'dayjs';
 
 const initialState: MessagesState = {
@@ -127,6 +128,13 @@ const messagesSlice = createSlice({
       });
       state.allIds = state.allIds.filter((id) => !messageIds.includes(id));
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(logoutAction, (state) => {
+      // Очищаем все сообщения при выходе
+      state.byId = {};
+      state.allIds = [];
+    });
   },
 });
 
