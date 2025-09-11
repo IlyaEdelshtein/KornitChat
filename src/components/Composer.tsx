@@ -7,7 +7,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Send as SendIcon } from '@mui/icons-material';
-import { useAppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { addUserMessage, addBotMessage } from '../store/messagesSlice';
 import {
   setChatTitle,
@@ -29,6 +29,7 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const textFieldRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
+  const currentChat = useAppSelector((state) => state.chats.byId[chatId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,10 +56,11 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
       })
     );
 
-    // Update chat title if this is the first message
-    // TODO: Get actual message count from chat
-    const title = inferTitleFromFirstMessage(userMessage);
-    dispatch(setChatTitle({ chatId, title }));
+    // Update chat title only if this is the first message in the chat
+    if (currentChat && currentChat.messageIds.length === 1) {
+      const title = inferTitleFromFirstMessage(userMessage);
+      dispatch(setChatTitle({ chatId, title }));
+    }
 
     // Simulate AI processing delay
     const delay = Math.random() * 500 + 700; // 700-1200ms
