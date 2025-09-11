@@ -6,12 +6,14 @@ interface AuthState {
     username: string;
   } | null;
   error: string | null;
+  justLoggedIn: boolean;
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
   user: null,
   error: null,
+  justLoggedIn: false,
 };
 
 // Hardcoded user for demo
@@ -32,6 +34,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.user = { username: action.payload.username };
       state.error = null;
+      state.justLoggedIn = true;
     },
 
     loginFailure: (state, action: PayloadAction<string>) => {
@@ -44,10 +47,15 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       state.error = null;
+      state.justLoggedIn = false;
     },
 
     clearError: (state) => {
       state.error = null;
+    },
+
+    clearJustLoggedIn: (state) => {
+      state.justLoggedIn = false;
     },
   },
 });
@@ -58,6 +66,7 @@ export const {
   loginFailure,
   logout: logoutAction,
   clearError,
+  clearJustLoggedIn,
 } = authSlice.actions;
 
 export const loginUser = (username: string, password: string) => {

@@ -105,6 +105,7 @@ const chatsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loginSuccess, (state) => {
+        // After login, always show empty state and clear current chat
         state.currentChatId = null;
         state.showEmptyState = true;
       })
