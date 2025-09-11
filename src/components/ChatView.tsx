@@ -38,21 +38,36 @@ export default function ChatView() {
       return;
     }
 
-    // If user navigated directly to a chat URL (e.g., after refresh), always show EmptyState
-    if (chatId) {
+    // If chatId exists and chat is found, hide empty state to show the chat
+    if (chatId && chatsById[chatId]) {
+      dispatch(setShowEmptyState(false));
+      return;
+    }
+
+    // If chatId exists but chat is not found, redirect to main page
+    if (chatId && !chatsById[chatId]) {
       dispatch(setShowEmptyState(true));
       navigate('/chat', { replace: true });
       return;
     }
 
-    // No specific chat in URL - stay on EmptyState if showEmptyState is true
-    if (!chatId) {
-      return;
-    }
+    // No specific chat in URL - stay on current state
   }, [chatId, chatsById, dispatch, navigate]);
 
-  // Show empty state if no chats exist OR if showEmptyState is true OR if no chatId (main page)
-  if (Object.keys(chatsById).length === 0 || showEmptyState || !chatId) {
+  // Show empty state if no chats exist OR if showEmptyState is true AND no specific chat is selected
+  if (Object.keys(chatsById).length === 0 || (showEmptyState && !chatId)) {
+    return (
+      <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ flex: 1, overflow: 'auto', p: 2 }}>
+          <EmptyState showCreateButton={true} />
+        </Box>
+        <Composer chatId={null} disabled={false} />
+      </Box>
+    );
+  }
+
+  // If we have a chatId but no valid chat, show empty state
+  if (chatId && !currentChat) {
     return (
       <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ flex: 1, overflow: 'auto', p: 2 }}>
