@@ -1,0 +1,12 @@
+// Простая base64 PNG иконка 192x192 // Это минимальная синяя иконка с белым
+текстом "AI" const icon192 =
+'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAdgAAAHYBTnsmCAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVHic7d1BahsxFIDhf5AcwD1AT+AT9AR6gZ6gJ+gJeoKeoCfoCXqCnqAn6Al6gp6gJ+gJShcmhCwSJ/bMSPOk7/sWBo9mpPnRSJZsOQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgL/q19wJ4fRExjYhpROwjYh8R+4hY/Pd1FxG7iNhGxDYiVpn5de+18nIhwLdExCEiTiLiNCJOI+IwIg5jzMI4IqYRsY2I64i4joh1RFxm5tfeayZEeE0RcRYRZxFxERHnEXHWe0298xrhdUTEcURcRcRVRFxGxEVmPvZe1Lt5DfCyIuI4xi/8eUSc9F5T73wG+D9FxCzGB/Oj9lpoR4DfRMRRjA/qn3qvhbYE+EVEzCPiXURcSED7BLiJiHdObdohwK8HdBcRf0fE397rYRsCPImIk8y8770Q2iDAHyLiKjMve6+DdgjwhN06rfiM8AQBnmS3jlYI8P0BffwLbbsF/vMW+M9bYCoRYFfutgAAAAAAAAA="';
+// Функция для создания canvas и генерации PNG function createIcon(size) { const
+canvas = document.createElement('canvas'); canvas.width = size; canvas.height =
+size; const ctx = canvas.getContext('2d'); // Фон ctx.fillStyle = '#1976d2';
+ctx.fillRect(0, 0, size, size); // Белый текст "AI" ctx.fillStyle = 'white';
+ctx.font = `bold ${size/3}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline
+= 'middle'; ctx.fillText('AI', size/2, size/2); return
+canvas.toDataURL('image/png'); } // Создаем иконки const icon192Data =
+createIcon(192); const icon512Data = createIcon(512); console.log('Icons
+generated successfully!');

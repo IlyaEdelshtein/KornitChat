@@ -1,0 +1,14 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="64" fill="#1976d2"/>
+  <!-- Чат пузырь -->
+  <rect x="96" y="160" width="240" height="120" rx="24" fill="white"/>
+  <!-- Точки в чате -->
+  <circle cx="156" cy="220" r="12" fill="#1976d2"/>
+  <circle cx="196" cy="220" r="12" fill="#1976d2"/>
+  <circle cx="236" cy="220" r="12" fill="#1976d2"/>
+  <!-- AI символ -->
+  <rect x="360" y="200" width="56" height="80" rx="12" fill="white"/>
+  <rect x="368" y="240" width="16" height="8" fill="#1976d2"/>
+  <rect x="392" y="240" width="16" height="8" fill="#1976d2"/>
+  <rect x="376" y="256" width="24" height="4" fill="#1976d2"/>
+</svg>

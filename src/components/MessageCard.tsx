@@ -69,7 +69,7 @@ export default function MessageCard({ message }: MessageCardProps) {
   };
 
   const handleChartTypeChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newChartType: 'line' | 'bar'
   ) => {
     if (newChartType !== null) {
