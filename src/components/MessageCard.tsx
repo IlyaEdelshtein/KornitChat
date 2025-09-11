@@ -24,6 +24,7 @@ import {
   BarChart,
   ViewList,
   ShowChart,
+  SmartToy,
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../store';
 import { setMessageViewMode, setMessageFeedback } from '../store/messagesSlice';
@@ -137,9 +138,48 @@ export default function MessageCard({ message }: MessageCardProps) {
 
   return (
     <Box sx={{ mb: 3 }}>
-      <Card>
+      <Card
+        sx={{
+          background:
+            theme.palette.mode === 'dark'
+              ? 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)'
+              : 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+          border: `2px solid ${theme.palette.primary.main}`,
+          boxShadow:
+            theme.palette.mode === 'dark'
+              ? '0 4px 20px rgba(59, 130, 246, 0.3)'
+              : '0 4px 20px rgba(59, 130, 246, 0.2)',
+        }}
+      >
         <CardContent>
-          <Typography variant="body1" sx={{ mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <SmartToy
+              sx={{
+                color: theme.palette.primary.main,
+                mr: 1,
+                fontSize: '1.2rem',
+              }}
+            />
+            <Typography
+              variant="caption"
+              sx={{
+                color: theme.palette.primary.main,
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: 1,
+              }}
+            >
+              Kornit AI Assistant
+            </Typography>
+          </Box>
+          <Typography
+            variant="body1"
+            sx={{
+              mb: 2,
+              color: theme.palette.mode === 'dark' ? '#e0f2fe' : '#0f172a',
+              fontWeight: 500,
+            }}
+          >
             {message.text}
           </Typography>
 
@@ -149,13 +189,25 @@ export default function MessageCard({ message }: MessageCardProps) {
                 p: 2,
                 mb: 2,
                 backgroundColor:
-                  theme.palette.mode === 'dark' ? 'grey.900' : 'grey.100',
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(0, 0, 0, 0.4)'
+                    : 'rgba(255, 255, 255, 0.8)',
+                border: `1px solid ${theme.palette.primary.light}`,
+                borderRadius: 2,
                 fontFamily: 'monospace',
                 fontSize: '0.9rem',
                 overflowX: 'auto',
+                backdropFilter: 'blur(5px)',
               }}
             >
-              <Typography variant="body2" component="pre" sx={{ margin: 0 }}>
+              <Typography
+                variant="body2"
+                component="pre"
+                sx={{
+                  margin: 0,
+                  color: theme.palette.mode === 'dark' ? '#e0f2fe' : '#1e293b',
+                }}
+              >
                 {message.sql}
               </Typography>
             </Paper>
