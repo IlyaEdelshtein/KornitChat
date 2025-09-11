@@ -16,8 +16,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 function ThemedApp() {
   const themeMode = useAppSelector((state) => state.ui.themeMode);
   
-  // Use basename only for GitHub Pages deployment, not for local development
-  const basename = window.location.hostname === 'localhost' ? '' : '/KornitChat';
+  // No basename needed - Vite handles base path automatically
+  const basename = '';
 
   const theme = createTheme({
     palette: {
