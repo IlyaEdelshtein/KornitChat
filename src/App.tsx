@@ -12,12 +12,13 @@ import { useAppSelector } from './store';
 import AppShell from './components/AppShell';
 import ChatView from './components/ChatView';
 import ProtectedRoute from './components/ProtectedRoute';
+import { getBaseName } from './utils/navigation';
 
 function ThemedApp() {
   const themeMode = useAppSelector((state) => state.ui.themeMode);
   
-  // No basename needed - Vite handles base path automatically
-  const basename = '';
+  // Use dynamic basename for GitHub Pages
+  const basename = getBaseName();
 
   const theme = createTheme({
     palette: {
