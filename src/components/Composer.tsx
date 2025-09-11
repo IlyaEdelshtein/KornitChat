@@ -47,8 +47,6 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
       })
     );
 
-    console.log('Composer - userMessageAction:', userMessageAction);
-
     // Add message to chat
     dispatch(
       addMessageToChat({
@@ -73,7 +71,7 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
       const botMessageAction = dispatch(
         addBotMessage({
           chatId,
-          text: "I've analyzed your t-shirt printing data based on your query. Here are the results:",
+          text: `I understood your question as "${userMessage}"\nAfter analyzing the information, I made the following query:`,
           sql,
           datasetKey: 'printing2024',
         })
