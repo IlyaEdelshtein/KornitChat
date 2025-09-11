@@ -33,7 +33,9 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
   const textFieldRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const currentChat = chatId ? useAppSelector((state) => state.chats.byId[chatId]) : null;
+  
+  // Always call useAppSelector - don't conditionally call hooks
+  const chatsById = useAppSelector((state) => state.chats.byId);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,12 +49,20 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
     // Determine the actual chatId to use
     let actualChatId = chatId;
 
+    // Check if this will be the first message (before adding anything)
+    let isFirstMessage = false;
+    
     // If no chatId provided, create a new chat
     if (!actualChatId) {
       const newChatAction = dispatch(createChat());
       actualChatId = newChatAction.payload.id;
       dispatch(setCurrentChat(actualChatId));
       navigate(`/chat/${actualChatId}`);
+      isFirstMessage = true;
+    } else {
+      // Check if existing chat has no messages
+      const existingChat = chatsById[actualChatId];
+      isFirstMessage = existingChat ? existingChat.messageIds.length === 0 : false;
     }
 
     // Add user message
@@ -72,8 +82,7 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
     );
 
     // Update chat title only if this is the first message in the chat
-    const chatToCheck = chatId ? currentChat : { messageIds: [] };
-    if (chatToCheck && chatToCheck.messageIds.length === 1) {
+    if (isFirstMessage) {
       const title = inferTitleFromFirstMessage(userMessage);
       dispatch(setChatTitle({ chatId: actualChatId, title }));
     }

@@ -66,27 +66,33 @@ export default function ChatList({ onChatSelect }: ChatListProps) {
     if (chatToDelete) {
       const isDeletingCurrentChat = chatId === chatToDelete;
       const chatToDeleteData = chatsById[chatToDelete];
-
-      // First, handle navigation if we're deleting the current chat
-      if (isDeletingCurrentChat) {
-        const remainingChats = chatIds.filter((id) => id !== chatToDelete);
-        if (remainingChats.length > 0) {
-          const newestChat = remainingChats[0];
-          dispatch(setCurrentChat(newestChat));
-          navigate(`/chat/${newestChat}`, { replace: true });
-        } else {
-          // Navigate to base chat route, which will trigger creation of new chat
-          navigate('/chat', { replace: true });
-        }
-      }
+      const remainingChats = chatIds.filter((id) => id !== chatToDelete);
 
       // Delete messages associated with this chat
       if (chatToDeleteData?.messageIds?.length > 0) {
         dispatch(deleteMessagesForChat(chatToDeleteData.messageIds));
       }
 
-      // Then delete the chat
+      // Delete the chat
       dispatch(deleteChat(chatToDelete));
+
+      // Handle navigation after deletion
+      if (isDeletingCurrentChat) {
+        if (remainingChats.length > 0) {
+          // Navigate to the most recent remaining chat
+          const newestChat = remainingChats[0];
+          dispatch(setCurrentChat(newestChat));
+          navigate(`/chat/${newestChat}`, { replace: true });
+        } else {
+          // No more chats - show empty state
+          dispatch(setShowEmptyState(true));
+          navigate('/chat', { replace: true });
+        }
+      } else if (remainingChats.length === 0) {
+        // If we deleted the last chat (but it wasn't current), still show empty state
+        dispatch(setShowEmptyState(true));
+        navigate('/chat', { replace: true });
+      }
     }
     setDeleteDialogOpen(false);
     setChatToDelete(null);

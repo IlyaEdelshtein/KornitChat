@@ -15,6 +15,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 function ThemedApp() {
   const themeMode = useAppSelector((state) => state.ui.themeMode);
+  
+  // Use basename only for GitHub Pages deployment, not for local development
+  const basename = window.location.hostname === 'localhost' ? '' : '/KornitChat';
 
   const theme = createTheme({
     palette: {
@@ -50,7 +53,7 @@ function ThemedApp() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router basename="/KornitChat">
+      <Router basename={basename}>
         <ProtectedRoute>
           <AppShell>
             <Routes>

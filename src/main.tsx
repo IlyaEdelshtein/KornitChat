@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 
-// Register Service Worker for PWA
-if ('serviceWorker' in navigator) {
+// Register Service Worker for PWA - только для production
+if ('serviceWorker' in navigator && window.location.hostname !== 'localhost') {
   window.addEventListener('load', () => {
-    const basePath = window.location.pathname.includes('/KornitChat') ? '/KornitChat/' : '/';
+    const basePath = window.location.pathname.startsWith('/KornitChat') ? '/KornitChat/' : '/';
     const swUrl = basePath + 'sw.js';
     navigator.serviceWorker
       .register(swUrl)

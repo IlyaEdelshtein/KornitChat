@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store';
-import { setCurrentChat } from '../store/chatsSlice';
+import { setCurrentChat, setShowEmptyState } from '../store/chatsSlice';
 import MessageCard from './MessageCard';
 import Composer from './Composer';
 import EmptyState from './EmptyState';
@@ -29,8 +29,17 @@ export default function ChatView() {
 
   // Handle chat navigation
   useEffect(() => {
+    // If no chats exist at all, show empty state
+    if (Object.keys(chatsById).length === 0) {
+      dispatch(setShowEmptyState(true));
+      if (chatId) {
+        navigate('/chat', { replace: true });
+      }
+      return;
+    }
+
     if (!chatId) {
-      // No specific chat in URL - stay on EmptyState
+      // No specific chat in URL - stay on EmptyState if showEmptyState is true
       return;
     }
 
@@ -42,6 +51,7 @@ export default function ChatView() {
 
     // If chat doesn't exist (e.g., invalid ID from URL), redirect to EmptyState
     if (!currentChat) {
+      dispatch(setShowEmptyState(true));
       navigate('/chat', { replace: true });
       return;
     }

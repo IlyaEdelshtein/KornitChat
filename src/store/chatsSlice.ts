@@ -51,9 +51,13 @@ const chatsSlice = createSlice({
       state.allIds = state.allIds.filter((id) => id !== chatId);
 
       // If we deleted the current chat, clear current chat selection
-      // The UI will handle setting a new current chat
       if (state.currentChatId === chatId) {
         state.currentChatId = null;
+      }
+
+      // If no chats left, show empty state
+      if (state.allIds.length === 0) {
+        state.showEmptyState = true;
       }
     },
 
