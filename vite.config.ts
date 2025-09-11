@@ -58,7 +58,7 @@ export default defineConfig({
       },
     }),
   ],
-  base: '/Kornit Chat/',
+  base: '/KornitChat/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
