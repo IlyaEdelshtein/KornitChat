@@ -8,6 +8,7 @@ const initialState: ChatsState = {
   byId: {},
   allIds: [],
   currentChatId: null,
+  showEmptyState: true,
 };
 
 const chatsSlice = createSlice({
@@ -32,6 +33,7 @@ const chatsSlice = createSlice({
         state.byId[id] = chat;
         state.allIds.unshift(id); // Add to beginning for recent-first order
         state.currentChatId = id;
+        state.showEmptyState = false; // Скрываем EmptyState при создании чата
       },
       prepare: (title?: string) => {
         const id = generateId();
@@ -91,18 +93,22 @@ const chatsSlice = createSlice({
     clearCurrentChat: (state) => {
       state.currentChatId = null;
     },
+
+    setShowEmptyState: (state, action: PayloadAction<boolean>) => {
+      state.showEmptyState = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(loginSuccess, (state) => {
-        // Сбрасываем текущий чат при логине
+        // При логине: сбрасываем текущий чат и всегда показываем EmptyState
         state.currentChatId = null;
+        state.showEmptyState = true; // Всегда показываем EmptyState после логина
       })
       .addCase(logoutAction, (state) => {
-        // Очищаем все чаты при выходе
-        state.byId = {};
-        state.allIds = [];
+        // При выходе только сбрасываем текущий чат, но сохраняем историю
         state.currentChatId = null;
+        state.showEmptyState = state.allIds.length === 0;
       });
   },
 });
@@ -115,6 +121,7 @@ export const {
   touchChatUpdated,
   addMessageToChat,
   clearCurrentChat,
+  setShowEmptyState,
 } = chatsSlice.actions;
 
 export default chatsSlice.reducer;

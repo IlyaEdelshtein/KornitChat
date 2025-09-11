@@ -131,9 +131,8 @@ const messagesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(logoutAction, (state) => {
-      // Очищаем все сообщения при выходе
-      state.byId = {};
-      state.allIds = [];
+      // При выходе сообщения сохраняем (не очищаем)
+      // Сообщения привязаны к чатам, поэтому их тоже нужно сохранить
     });
   },
 });

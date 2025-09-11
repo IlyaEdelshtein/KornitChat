@@ -13,7 +13,7 @@ export default function ChatView() {
   const dispatch = useAppDispatch();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { byId: chatsById, currentChatId } = useAppSelector(
+  const { byId: chatsById, currentChatId, showEmptyState } = useAppSelector(
     (state) => state.chats
   );
   const { byId: messagesById } = useAppSelector((state) => state.messages);
@@ -31,25 +31,21 @@ export default function ChatView() {
   useEffect(() => {
     if (!chatId) {
       // No specific chat in URL
-      // After login, currentChatId is null, so we should show empty state
-      // Don't automatically navigate to existing chats
+      // After login or when showEmptyState is true, don't auto-navigate
+      return;
+    }
+
+    // If showEmptyState is true, navigate back to base route
+    if (showEmptyState) {
+      navigate('/chat', { replace: true });
       return;
     }
 
     if (!currentChat) {
       // Chat doesn't exist, but we have a chatId in URL
       // This might happen if the chat was just deleted
-      // Let's check if there are any chats available
-      const availableChatIds = Object.keys(chatsById);
-      if (availableChatIds.length > 0) {
-        // Navigate to the first available chat
-        const firstAvailableChat = availableChatIds[0];
-        dispatch(setCurrentChat(firstAvailableChat));
-        navigate(`/chat/${firstAvailableChat}`, { replace: true });
-      } else {
-        // No chats available, navigate to base chat route
-        navigate('/chat', { replace: true });
-      }
+      // Navigate to base chat route to show EmptyState
+      navigate('/chat', { replace: true });
       return;
     }
 
@@ -57,10 +53,10 @@ export default function ChatView() {
     if (currentChatId !== chatId) {
       dispatch(setCurrentChat(chatId));
     }
-  }, [chatId, currentChat, currentChatId, chatsById, dispatch, navigate]);
+  }, [chatId, currentChat, currentChatId, chatsById, dispatch, navigate, showEmptyState]);
 
-  // If no chats exist at all, show empty state without composer
-  if (Object.keys(chatsById).length === 0) {
+  // Show empty state if no chats exist OR if showEmptyState is true
+  if (Object.keys(chatsById).length === 0 || showEmptyState) {
     return (
       <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ flex: 1, overflow: 'auto', p: 2 }}>

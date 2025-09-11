@@ -21,7 +21,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store';
-import { createChat, deleteChat, setCurrentChat } from '../store/chatsSlice';
+import { createChat, deleteChat, setCurrentChat, setShowEmptyState } from '../store/chatsSlice';
 import { deleteMessagesForChat } from '../store/messagesSlice';
 
 interface ChatListProps {
@@ -48,6 +48,7 @@ export default function ChatList({ onChatSelect }: ChatListProps) {
 
   const handleChatSelect = (selectedChatId: string) => {
     dispatch(setCurrentChat(selectedChatId));
+    dispatch(setShowEmptyState(false)); // Скрываем EmptyState при выборе чата
     navigate(`/chat/${selectedChatId}`);
     onChatSelect?.();
   };

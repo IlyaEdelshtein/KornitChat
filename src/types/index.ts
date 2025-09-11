@@ -21,6 +21,7 @@ export interface ChatsState {
   byId: Record<string, Chat>;
   allIds: string[];
   currentChatId: string | null;
+  showEmptyState: boolean;
 }
 
 export interface MessagesState {
