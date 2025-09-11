@@ -1,12 +1,26 @@
-import { Box, Typography, Paper, Button, TextField, IconButton } from '@mui/material';
-import { Chat as ChatIcon, Add as AddIcon, Send as SendIcon } from '@mui/icons-material';
+import {
+  Box,
+  Typography,
+  Paper,
+  Button,
+  TextField,
+  IconButton,
+} from '@mui/material';
+import {
+  Chat as ChatIcon,
+  Add as AddIcon,
+  Send as SendIcon,
+} from '@mui/icons-material';
 import { useAppSelector, useAppDispatch } from '../store';
 import { createChat, setCurrentChat } from '../store/chatsSlice';
 import { addUserMessage, addBotMessage } from '../store/messagesSlice';
 import { addMessageToChat, setChatTitle } from '../store/chatsSlice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { generateMockSql, inferTitleFromFirstMessage } from '../utils/mockHelpers';
+import {
+  generateMockSql,
+  inferTitleFromFirstMessage,
+} from '../utils/mockHelpers';
 
 interface EmptyStateProps {
   showCreateButton?: boolean;
@@ -17,7 +31,7 @@ export default function EmptyState({
 }: EmptyStateProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { allIds, showEmptyState } = useAppSelector((state) => state.chats);
+  const { allIds } = useAppSelector((state) => state.chats);
   const chatsCount = allIds.length;
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +45,7 @@ export default function EmptyState({
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!message.trim() || isLoading) return;
 
     const userMessage = message.trim();

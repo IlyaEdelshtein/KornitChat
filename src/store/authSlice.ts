@@ -62,7 +62,7 @@ export const {
 
 // Thunk для логина
 export const loginUser = (username: string, password: string) => {
-  return (dispatch: any, getState: any) => {
+  return (dispatch: any) => {
     dispatch(loginStart());
 
     // Simulate API delay
