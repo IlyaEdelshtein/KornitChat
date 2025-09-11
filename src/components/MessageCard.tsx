@@ -12,6 +12,9 @@ import {
   Chip,
   Paper,
   useTheme,
+  Tooltip,
+  ToggleButton,
+  ToggleButtonGroup,
 } from '@mui/material';
 import {
   ThumbUp,
@@ -20,6 +23,7 @@ import {
   TableChart,
   BarChart,
   ViewList,
+  ShowChart,
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../store';
 import { setMessageViewMode, setMessageFeedback } from '../store/messagesSlice';
@@ -41,6 +45,7 @@ export default function MessageCard({ message }: MessageCardProps) {
   const [exportMenuAnchor, setExportMenuAnchor] = useState<null | HTMLElement>(
     null
   );
+  const [chartType, setChartType] = useState<'line' | 'bar'>('line');
 
   const isExportBusy = exportBusyMessageIds.includes(message.id);
 
@@ -61,6 +66,15 @@ export default function MessageCard({ message }: MessageCardProps) {
 
   const handleExportMenuClose = () => {
     setExportMenuAnchor(null);
+  };
+
+  const handleChartTypeChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newChartType: 'line' | 'bar'
+  ) => {
+    if (newChartType !== null) {
+      setChartType(newChartType);
+    }
   };
 
   const handleExport = async (format: 'csv' | 'xlsx') => {
@@ -148,7 +162,15 @@ export default function MessageCard({ message }: MessageCardProps) {
           )}
 
           {/* View mode toggle */}
-          <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box
+            sx={{
+              mb: 2,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              flexWrap: 'wrap',
+            }}
+          >
             <Typography variant="body2" color="text.secondary">
               View:
             </Typography>
@@ -179,6 +201,28 @@ export default function MessageCard({ message }: MessageCardProps) {
                 Both
               </Button>
             </ButtonGroup>
+
+            {/* Chart type toggle - only show when chart is visible */}
+            {(message.viewMode === 'chart' || message.viewMode === 'both') && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Chart:
+                </Typography>
+                <ToggleButtonGroup
+                  value={chartType}
+                  exclusive
+                  onChange={handleChartTypeChange}
+                  size="small"
+                >
+                  <ToggleButton value="line" aria-label="line chart">
+                    <ShowChart />
+                  </ToggleButton>
+                  <ToggleButton value="bar" aria-label="bar chart">
+                    <BarChart />
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Box>
+            )}
           </Box>
 
           {/* Result display */}
@@ -190,26 +234,30 @@ export default function MessageCard({ message }: MessageCardProps) {
 
           {(message.viewMode === 'chart' || message.viewMode === 'both') && (
             <Box>
-              <ResultChart data={mockResult.rows} />
+              <ResultChart data={mockResult.rows} chartType={chartType} />
             </Box>
           )}
 
           {/* Actions */}
           <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <IconButton
-              size="small"
-              onClick={() => handleFeedback('like')}
-              color={message.feedback === 'like' ? 'primary' : 'default'}
-            >
-              <ThumbUp fontSize="small" />
-            </IconButton>
-            <IconButton
-              size="small"
-              onClick={() => handleFeedback('dislike')}
-              color={message.feedback === 'dislike' ? 'error' : 'default'}
-            >
-              <ThumbDown fontSize="small" />
-            </IconButton>
+            <Tooltip title="Did you like this response?">
+              <IconButton
+                size="small"
+                onClick={() => handleFeedback('like')}
+                color={message.feedback === 'like' ? 'primary' : 'default'}
+              >
+                <ThumbUp fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Was this response not helpful?">
+              <IconButton
+                size="small"
+                onClick={() => handleFeedback('dislike')}
+                color={message.feedback === 'dislike' ? 'error' : 'default'}
+              >
+                <ThumbDown fontSize="small" />
+              </IconButton>
+            </Tooltip>
 
             <Box sx={{ flexGrow: 1 }} />
 

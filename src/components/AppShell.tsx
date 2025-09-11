@@ -16,9 +16,11 @@ import {
   Menu as MenuIcon,
   Brightness4,
   Brightness7,
+  Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { useAppSelector, useAppDispatch } from '../store';
 import { closeSnackbar, setThemeMode } from '../store/uiSlice';
+import { logout } from '../store/authSlice';
 import ChatList from './ChatList';
 
 const DRAWER_WIDTH = 280;
@@ -45,6 +47,10 @@ export default function AppShell({ children }: AppShellProps) {
 
   const handleSnackbarClose = () => {
     dispatch(closeSnackbar());
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   const drawer = (
@@ -83,6 +89,9 @@ export default function AppShell({ children }: AppShellProps) {
           </Typography>
           <IconButton color="inherit" onClick={handleThemeToggle}>
             {themeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
+          <IconButton color="inherit" onClick={handleLogout}>
+            <LogoutIcon />
           </IconButton>
         </Toolbar>
       </AppBar>

@@ -38,8 +38,17 @@ export interface UIState {
   isTyping: boolean;
 }
 
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: {
+    username: string;
+  } | null;
+  error: string | null;
+}
+
 export interface RootState {
   chats: ChatsState;
   messages: MessagesState;
   ui: UIState;
+  auth: AuthState;
 }

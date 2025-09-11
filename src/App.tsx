@@ -11,6 +11,7 @@ import { store, persistor } from './store';
 import { useAppSelector } from './store';
 import AppShell from './components/AppShell';
 import ChatView from './components/ChatView';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function ThemedApp() {
   const themeMode = useAppSelector((state) => state.ui.themeMode);
@@ -50,13 +51,15 @@ function ThemedApp() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <AppShell>
-          <Routes>
-            <Route path="/" element={<Navigate to="/chat" replace />} />
-            <Route path="/chat" element={<ChatView />} />
-            <Route path="/chat/:chatId" element={<ChatView />} />
-          </Routes>
-        </AppShell>
+        <ProtectedRoute>
+          <AppShell>
+            <Routes>
+              <Route path="/" element={<Navigate to="/chat" replace />} />
+              <Route path="/chat" element={<ChatView />} />
+              <Route path="/chat/:chatId" element={<ChatView />} />
+            </Routes>
+          </AppShell>
+        </ProtectedRoute>
       </Router>
     </ThemeProvider>
   );

@@ -1,0 +1,152 @@
+import { useState, useEffect } from 'react';
+import {
+  Box,
+  Card,
+  CardContent,
+  TextField,
+  Button,
+  Typography,
+  Alert,
+  InputAdornment,
+  IconButton,
+  CircularProgress,
+} from '@mui/material';
+import {
+  Visibility,
+  VisibilityOff,
+  Login as LoginIcon,
+  Chat as ChatIcon,
+} from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from '../store';
+import { loginUser, clearError } from '../store/authSlice';
+
+export default function LoginPage() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useAppDispatch();
+  const { error } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    // Clear any existing errors when component mounts
+    dispatch(clearError());
+  }, [dispatch]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!username.trim() || !password.trim()) return;
+
+    setIsLoading(true);
+    // @ts-ignore - we know loginUser returns a function
+    await dispatch(loginUser(username.trim(), password));
+    setIsLoading(false);
+  };
+
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  return (
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        p: 2,
+      }}
+    >
+      <Card
+        sx={{
+          width: '100%',
+          maxWidth: 400,
+          boxShadow: 3,
+        }}
+      >
+        <CardContent sx={{ p: 4 }}>
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <ChatIcon
+              sx={{
+                fontSize: 64,
+                color: 'primary.main',
+                mb: 2,
+              }}
+            />
+            <Typography variant="h4" component="h1" gutterBottom>
+              AI Chat
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Please sign in to continue
+            </Typography>
+          </Box>
+
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+            <TextField
+              fullWidth
+              label="Username"
+              variant="outlined"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              disabled={isLoading}
+              sx={{ mb: 2 }}
+              autoFocus
+            />
+
+            <TextField
+              fullWidth
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+              sx={{ mb: 3 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleTogglePasswordVisibility}
+                      edge="end"
+                      disabled={isLoading}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              size="large"
+              disabled={!username.trim() || !password.trim() || isLoading}
+              startIcon={
+                isLoading ? <CircularProgress size={20} /> : <LoginIcon />
+              }
+              sx={{ mb: 2 }}
+            >
+              {isLoading ? 'Signing in...' : 'Sign In'}
+            </Button>
+
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="caption" color="text.secondary">
+                Demo credentials: admin / admin
+              </Typography>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
+  );
+}

@@ -5,17 +5,19 @@ import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux';
 import chatsReducer from './chatsSlice';
 import messagesReducer from './messagesSlice';
 import uiReducer from './uiSlice';
+import authReducer from './authSlice';
 
 const rootReducer = combineReducers({
   chats: chatsReducer,
   messages: messagesReducer,
   ui: uiReducer,
+  auth: authReducer,
 });
 
 const persistConfig = {
   key: 'ai-chat-root',
   storage,
-  whitelist: ['chats', 'messages'], // Only persist chats and messages, not UI state
+  whitelist: ['chats', 'messages', 'auth'], // Persist chats, messages, and auth state
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
