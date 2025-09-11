@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store';
 import { clearJustLoggedIn } from '../store/authSlice';
-import { navigateToChat, getBasePath } from '../utils/navigation';
+import { navigateToChat } from '../utils/navigation';
 import LoginPage from './LoginPage';
 
 interface ProtectedRouteProps {
@@ -21,9 +21,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
       // Clear the flag so this only happens once after login
       dispatch(clearJustLoggedIn());
       // Always navigate to /chat (not specific chat) after login
-      const basePath = getBasePath();
-      const expectedChatPath = basePath ? `${basePath}/chat` : '/chat';
-      if (location.pathname !== expectedChatPath) {
+      if (!location.pathname.endsWith('/chat')) {
         navigateToChat(navigate);
       }
     }
