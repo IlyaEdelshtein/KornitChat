@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store';
-import { setCurrentChat, setShowEmptyState } from '../store/chatsSlice';
+import { setShowEmptyState } from '../store/chatsSlice';
 import MessageCard from './MessageCard';
 import Composer from './Composer';
 import EmptyState from './EmptyState';
@@ -13,7 +13,7 @@ export default function ChatView() {
   const dispatch = useAppDispatch();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { byId: chatsById, currentChatId, showEmptyState } = useAppSelector(
+  const { byId: chatsById, showEmptyState } = useAppSelector(
     (state) => state.chats
   );
   const { byId: messagesById } = useAppSelector((state) => state.messages);
@@ -38,53 +38,27 @@ export default function ChatView() {
       return;
     }
 
-    if (!chatId) {
-      // No specific chat in URL - stay on EmptyState if showEmptyState is true
-      return;
-    }
-
-    // If showEmptyState is true, navigate back to base route
-    if (showEmptyState) {
-      navigate('/chat', { replace: true });
-      return;
-    }
-
-    // If chat doesn't exist (e.g., invalid ID from URL), redirect to EmptyState
-    if (!currentChat) {
+    // If user navigated directly to a chat URL (e.g., after refresh), always show EmptyState
+    if (chatId) {
       dispatch(setShowEmptyState(true));
       navigate('/chat', { replace: true });
       return;
     }
 
-    // Set current chat if it's different
-    if (currentChatId !== chatId) {
-      dispatch(setCurrentChat(chatId));
+    // No specific chat in URL - stay on EmptyState if showEmptyState is true
+    if (!chatId) {
+      return;
     }
-  }, [chatId, currentChat, currentChatId, chatsById, dispatch, navigate, showEmptyState]);
+  }, [chatId, chatsById, dispatch, navigate]);
 
-  // Show empty state if no chats exist OR if showEmptyState is true
-  if (Object.keys(chatsById).length === 0 || showEmptyState) {
+  // Show empty state if no chats exist OR if showEmptyState is true OR if no chatId (main page)
+  if (Object.keys(chatsById).length === 0 || showEmptyState || !chatId) {
     return (
       <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ flex: 1, overflow: 'auto', p: 2 }}>
           <EmptyState showCreateButton={true} />
         </Box>
         <Composer chatId={null} disabled={false} />
-      </Box>
-    );
-  }
-
-  if (!currentChat) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100%',
-        }}
-      >
-        <Typography>Loading...</Typography>
       </Box>
     );
   }
@@ -103,7 +77,7 @@ export default function ChatView() {
           </>
         )}
       </Box>
-      <Composer chatId={currentChat.id} disabled={false} />
+      <Composer chatId={currentChat?.id || null} disabled={false} />
     </Box>
   );
 }

@@ -2,7 +2,11 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig({
+export default defineConfig(({ command, mode }) => {
+  const isProduction = command === 'build';
+  const baseUrl = isProduction ? '/KornitChat/' : '/';
+  
+  return {
   plugins: [
     react(),
     VitePWA({
@@ -16,8 +20,8 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/KornitChat/',
-        start_url: '/KornitChat/',
+        scope: baseUrl,
+        start_url: baseUrl,
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -58,7 +62,7 @@ export default defineConfig({
       },
     }),
   ],
-  base: '/KornitChat/',
+  base: baseUrl,
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -67,4 +71,5 @@ export default defineConfig({
     port: 3000,
     open: true,
   },
+  };
 });

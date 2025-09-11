@@ -15,6 +15,7 @@ import {
   addMessageToChat,
   createChat,
   setCurrentChat,
+  setShowEmptyState,
 } from '../store/chatsSlice';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -57,6 +58,7 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
       const newChatAction = dispatch(createChat());
       actualChatId = newChatAction.payload.id;
       dispatch(setCurrentChat(actualChatId));
+      dispatch(setShowEmptyState(false)); // Hide empty state when creating a new chat
       navigate(`/chat/${actualChatId}`);
       isFirstMessage = true;
     } else {
