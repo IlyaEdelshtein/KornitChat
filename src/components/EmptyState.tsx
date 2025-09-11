@@ -50,7 +50,7 @@ export default function EmptyState({
           }}
         />
         <Typography variant="h5" gutterBottom color="text.primary">
-          {isFirstTime ? 'Welcome to AI Chat' : 'Start a Conversation'}
+          {isFirstTime ? 'Welcome to Kornit Chat' : 'Start a Conversation'}
         </Typography>
         <Typography variant="body1" color="text.secondary" paragraph>
           {isFirstTime

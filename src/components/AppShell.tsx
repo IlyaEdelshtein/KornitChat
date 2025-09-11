@@ -57,7 +57,7 @@ export default function AppShell({ children }: AppShellProps) {
     <Box>
       <Toolbar>
         <Typography variant="h6" noWrap component="div">
-          AI Chat
+          Kornit Chat
         </Typography>
       </Toolbar>
       <ChatList onChatSelect={() => isMobile && setMobileOpen(false)} />

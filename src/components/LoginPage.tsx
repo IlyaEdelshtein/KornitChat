@@ -76,7 +76,7 @@ export default function LoginPage() {
               }}
             />
             <Typography variant="h4" component="h1" gutterBottom>
-              AI Chat
+              Kornit Chat
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Please sign in to continue

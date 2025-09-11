@@ -9,9 +9,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'AI Chat Assistant',
-        short_name: 'AI Chat',
-        description: 'GPT-style AI chat interface for data queries',
+        name: 'Kornit Chat Assistant',
+        short_name: 'Kornit Chat',
+        description: 'Kornit chat interface for data queries',
         theme_color: '#1976d2',
         background_color: '#ffffff',
         display: 'standalone',
