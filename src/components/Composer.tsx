@@ -47,6 +47,8 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
       })
     );
 
+    console.log('Composer - userMessageAction:', userMessageAction);
+
     // Add message to chat
     dispatch(
       addMessageToChat({

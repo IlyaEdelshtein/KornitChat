@@ -22,6 +22,10 @@ export default function ChatView() {
   const messages =
     currentChat?.messageIds.map((id) => messagesById[id]).filter(Boolean) || [];
 
+  // Debug: log messages to console
+  console.log('ChatView - currentChat:', currentChat);
+  console.log('ChatView - messages:', messages);
+
   // Auto-scroll to bottom when new messages are added
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
