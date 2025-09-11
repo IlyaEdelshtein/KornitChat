@@ -20,6 +20,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
 import { loginUser, clearError } from '../store/authSlice';
+import { navigateToChat } from '../utils/navigation';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('admin');
@@ -39,7 +40,7 @@ export default function LoginPage() {
   useEffect(() => {
     // Redirect to base chat route after successful login
     if (isAuthenticated) {
-      navigate('/chat', { replace: true });
+      navigateToChat(navigate);
     }
   }, [isAuthenticated, navigate]);
 

@@ -23,6 +23,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store';
 import { createChat, deleteChat, setCurrentChat, setShowEmptyState } from '../store/chatsSlice';
 import { deleteMessagesForChat } from '../store/messagesSlice';
+import { navigateToChatId, navigateToChat } from '../utils/navigation';
 
 interface ChatListProps {
   onChatSelect?: () => void;
@@ -42,14 +43,14 @@ export default function ChatList({ onChatSelect }: ChatListProps) {
   const handleNewChat = () => {
     const newChatId = dispatch(createChat()).payload.id;
     dispatch(setCurrentChat(newChatId));
-    navigate(`/chat/${newChatId}`);
+    navigateToChatId(navigate, newChatId);
     onChatSelect?.();
   };
 
   const handleChatSelect = (selectedChatId: string) => {
     dispatch(setCurrentChat(selectedChatId));
     dispatch(setShowEmptyState(false));
-    navigate(`/chat/${selectedChatId}`);
+    navigateToChatId(navigate, selectedChatId);
     onChatSelect?.();
   };
 
@@ -82,16 +83,16 @@ export default function ChatList({ onChatSelect }: ChatListProps) {
           // Navigate to the most recent remaining chat
           const newestChat = remainingChats[0];
           dispatch(setCurrentChat(newestChat));
-          navigate(`/chat/${newestChat}`, { replace: true });
+          navigateToChatId(navigate, newestChat);
         } else {
           // No more chats - show empty state
           dispatch(setShowEmptyState(true));
-          navigate('/chat', { replace: true });
+          navigateToChat(navigate);
         }
       } else if (remainingChats.length === 0) {
         // If we deleted the last chat (but it wasn't current), still show empty state
         dispatch(setShowEmptyState(true));
-        navigate('/chat', { replace: true });
+        navigateToChat(navigate);
       }
     }
     setDeleteDialogOpen(false);

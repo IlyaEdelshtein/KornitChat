@@ -22,6 +22,7 @@ import {
   generateMockSql,
   inferTitleFromFirstMessage,
 } from '../utils/mockHelpers';
+import { navigateToChatId } from '../utils/navigation';
 
 interface ComposerProps {
   chatId: string | null;
@@ -59,7 +60,7 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
       actualChatId = newChatAction.payload.id;
       dispatch(setCurrentChat(actualChatId));
       dispatch(setShowEmptyState(false)); // Hide empty state when creating a new chat
-      navigate(`/chat/${actualChatId}`);
+      navigateToChatId(navigate, actualChatId);
       isFirstMessage = true;
     } else {
       // Check if existing chat has no messages

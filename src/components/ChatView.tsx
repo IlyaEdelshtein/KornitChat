@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store';
 import { setShowEmptyState } from '../store/chatsSlice';
+import { navigateToChat } from '../utils/navigation';
 import MessageCard from './MessageCard';
 import Composer from './Composer';
 import EmptyState from './EmptyState';
@@ -33,7 +34,7 @@ export default function ChatView() {
     if (Object.keys(chatsById).length === 0) {
       dispatch(setShowEmptyState(true));
       if (chatId) {
-        navigate('/chat', { replace: true });
+        navigateToChat(navigate);
       }
       return;
     }
@@ -47,7 +48,7 @@ export default function ChatView() {
     // If chatId exists but chat is not found, redirect to main page
     if (chatId && !chatsById[chatId]) {
       dispatch(setShowEmptyState(true));
-      navigate('/chat', { replace: true });
+      navigateToChat(navigate);
       return;
     }
 

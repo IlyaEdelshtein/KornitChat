@@ -1,7 +1,7 @@
 {
-  "name": "AI Chat Assistant",
-  "short_name": "AI Chat",
-  "description": "GPT-style AI chat interface for data queries",
+  "name": "Kornit Chat Assistant",
+  "short_name": "Kornit Chat",
+  "description": "Kornit chat interface for data queries",
   "theme_color": "#1976d2",
   "background_color": "#ffffff",
   "display": "standalone",
