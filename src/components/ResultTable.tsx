@@ -23,7 +23,6 @@ import { PrintingDataRow } from '../data/printing2024';
 interface ResultTableProps {
   data: PrintingDataRow[];
 }
-
 type SortDirection = 'asc' | 'desc';
 type SortBy = keyof PrintingDataRow | null;
 
