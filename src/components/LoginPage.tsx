@@ -22,8 +22,8 @@ import { useAppDispatch, useAppSelector } from '../store';
 import { loginUser, clearError } from '../store/authSlice';
 
 export default function LoginPage() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('admin');
+  const [password, setPassword] = useState('admin');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
