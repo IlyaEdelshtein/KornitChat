@@ -279,15 +279,40 @@ export default function MessageCard({ message }: MessageCardProps) {
 
           {/* Result display */}
           {(message.viewMode === 'table' || message.viewMode === 'both') && (
-            <Box sx={{ mb: message.viewMode === 'both' ? 2 : 0 }}>
+            <Paper
+              sx={{
+                mb: message.viewMode === 'both' ? 2 : 0,
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 2,
+                border: `1px solid ${theme.palette.divider}`,
+                overflow: 'hidden',
+                boxShadow: `0 2px 8px ${
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(0, 0, 0, 0.3)'
+                    : 'rgba(0, 0, 0, 0.1)'
+                }`,
+              }}
+            >
               <ResultTable data={mockResult.rows} />
-            </Box>
+            </Paper>
           )}
 
           {(message.viewMode === 'chart' || message.viewMode === 'both') && (
-            <Box>
+            <Paper
+              sx={{
+                p: 3,
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 2,
+                border: `1px solid ${theme.palette.divider}`,
+                boxShadow: `0 2px 8px ${
+                  theme.palette.mode === 'dark'
+                    ? 'rgba(0, 0, 0, 0.3)'
+                    : 'rgba(0, 0, 0, 0.1)'
+                }`,
+              }}
+            >
               <ResultChart data={mockResult.rows} chartType={chartType} />
-            </Box>
+            </Paper>
           )}
 
           {/* Actions */}
