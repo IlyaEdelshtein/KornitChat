@@ -60,7 +60,6 @@ export const {
   clearError,
 } = authSlice.actions;
 
-// Thunk для логина
 export const loginUser = (username: string, password: string) => {
   return (dispatch: any) => {
     dispatch(loginStart());
@@ -76,7 +75,6 @@ export const loginUser = (username: string, password: string) => {
   };
 };
 
-// Thunk для выхода
 export const logout = () => {
   return (dispatch: any) => {
     dispatch(logoutAction());

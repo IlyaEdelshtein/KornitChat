@@ -48,7 +48,7 @@ export default function ChatList({ onChatSelect }: ChatListProps) {
 
   const handleChatSelect = (selectedChatId: string) => {
     dispatch(setCurrentChat(selectedChatId));
-    dispatch(setShowEmptyState(false)); // Скрываем EmptyState при выборе чата
+    dispatch(setShowEmptyState(false));
     navigate(`/chat/${selectedChatId}`);
     onChatSelect?.();
   };

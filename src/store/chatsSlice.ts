@@ -33,7 +33,7 @@ const chatsSlice = createSlice({
         state.byId[id] = chat;
         state.allIds.unshift(id); // Add to beginning for recent-first order
         state.currentChatId = id;
-        state.showEmptyState = false; // Скрываем EmptyState при создании чата
+        state.showEmptyState = false;
       },
       prepare: (title?: string) => {
         const id = generateId();
@@ -101,12 +101,10 @@ const chatsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(loginSuccess, (state) => {
-        // При логине: сбрасываем текущий чат и всегда показываем EmptyState
         state.currentChatId = null;
-        state.showEmptyState = true; // Всегда показываем EmptyState после логина
+        state.showEmptyState = true;
       })
       .addCase(logoutAction, (state) => {
-        // При выходе только сбрасываем текущий чат, но сохраняем историю
         state.currentChatId = null;
         state.showEmptyState = state.allIds.length === 0;
       });
