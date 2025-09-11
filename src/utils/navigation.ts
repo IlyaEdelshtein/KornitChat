@@ -3,23 +3,20 @@ const isGitHubPages = (): boolean => {
   return window.location.hostname === 'ilyaedelshtein.github.io';
 };
 
-const getBasePath = (): string => {
+// For React Router basename
+export const getBaseName = (): string => {
   if (isGitHubPages()) {
     return '/KornitChat';
   }
   return '';
 };
 
+// For navigation within the app - always use relative paths
+// React Router will handle the basename automatically
 export const navigateToChat = (navigate: (path: string, options?: any) => void) => {
-  const basePath = getBasePath();
-  navigate(`${basePath}/chat`, { replace: true });
+  navigate('/chat', { replace: true });
 };
 
 export const navigateToChatId = (navigate: (path: string, options?: any) => void, chatId: string) => {
-  const basePath = getBasePath();
-  navigate(`${basePath}/chat/${chatId}`);
-};
-
-export const getBaseName = (): string => {
-  return getBasePath();
+  navigate(`/chat/${chatId}`);
 };
