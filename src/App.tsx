@@ -50,7 +50,7 @@ function ThemedApp() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
+      <Router basename="/KornitChat">
         <ProtectedRoute>
           <AppShell>
             <Routes>

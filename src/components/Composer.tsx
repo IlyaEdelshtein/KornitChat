@@ -13,14 +13,17 @@ import {
   setChatTitle,
   touchChatUpdated,
   addMessageToChat,
+  createChat,
+  setCurrentChat,
 } from '../store/chatsSlice';
+import { useNavigate } from 'react-router-dom';
 import {
   generateMockSql,
   inferTitleFromFirstMessage,
 } from '../utils/mockHelpers';
 
 interface ComposerProps {
-  chatId: string;
+  chatId: string | null;
   disabled: boolean;
 }
 
@@ -29,7 +32,8 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const textFieldRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
-  const currentChat = useAppSelector((state) => state.chats.byId[chatId]);
+  const navigate = useNavigate();
+  const currentChat = chatId ? useAppSelector((state) => state.chats.byId[chatId]) : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,10 +44,21 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
     setMessage('');
     setIsLoading(true);
 
+    // Determine the actual chatId to use
+    let actualChatId = chatId;
+
+    // If no chatId provided, create a new chat
+    if (!actualChatId) {
+      const newChatAction = dispatch(createChat());
+      actualChatId = newChatAction.payload.id;
+      dispatch(setCurrentChat(actualChatId));
+      navigate(`/chat/${actualChatId}`);
+    }
+
     // Add user message
     const userMessageAction = dispatch(
       addUserMessage({
-        chatId,
+        chatId: actualChatId,
         text: userMessage,
       })
     );
@@ -51,15 +66,16 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
     // Add message to chat
     dispatch(
       addMessageToChat({
-        chatId,
+        chatId: actualChatId,
         messageId: userMessageAction.payload.id,
       })
     );
 
     // Update chat title only if this is the first message in the chat
-    if (currentChat && currentChat.messageIds.length === 1) {
+    const chatToCheck = chatId ? currentChat : { messageIds: [] };
+    if (chatToCheck && chatToCheck.messageIds.length === 1) {
       const title = inferTitleFromFirstMessage(userMessage);
-      dispatch(setChatTitle({ chatId, title }));
+      dispatch(setChatTitle({ chatId: actualChatId, title }));
     }
 
     // Simulate AI processing delay
@@ -72,7 +88,7 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
       // Add bot message
       const botMessageAction = dispatch(
         addBotMessage({
-          chatId,
+          chatId: actualChatId,
           text: `I understood your question as "${userMessage}"\nAfter analyzing the information, I made the following query:`,
           sql,
           datasetKey: 'printing2024',
@@ -82,12 +98,12 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
       // Add message to chat
       dispatch(
         addMessageToChat({
-          chatId,
+          chatId: actualChatId,
           messageId: botMessageAction.payload.id,
         })
       );
 
-      dispatch(touchChatUpdated(chatId));
+      dispatch(touchChatUpdated(actualChatId));
       setIsLoading(false);
     }, delay);
   };

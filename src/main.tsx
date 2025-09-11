@@ -5,8 +5,10 @@ import App from './App.tsx';
 // Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    const basePath = window.location.pathname.includes('/KornitChat') ? '/KornitChat/' : '/';
+    const swUrl = basePath + 'sw.js';
     navigator.serviceWorker
-      .register('/sw.js')
+      .register(swUrl)
       .then((registration) => {
         console.log('SW registered: ', registration);
       })

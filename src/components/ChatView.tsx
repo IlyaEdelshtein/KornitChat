@@ -30,8 +30,7 @@ export default function ChatView() {
   // Handle chat navigation
   useEffect(() => {
     if (!chatId) {
-      // No specific chat in URL
-      // After login or when showEmptyState is true, don't auto-navigate
+      // No specific chat in URL - stay on EmptyState
       return;
     }
 
@@ -41,10 +40,8 @@ export default function ChatView() {
       return;
     }
 
+    // If chat doesn't exist (e.g., invalid ID from URL), redirect to EmptyState
     if (!currentChat) {
-      // Chat doesn't exist, but we have a chatId in URL
-      // This might happen if the chat was just deleted
-      // Navigate to base chat route to show EmptyState
       navigate('/chat', { replace: true });
       return;
     }
@@ -62,6 +59,7 @@ export default function ChatView() {
         <Box sx={{ flex: 1, overflow: 'auto', p: 2 }}>
           <EmptyState showCreateButton={true} />
         </Box>
+        <Composer chatId={null} disabled={false} />
       </Box>
     );
   }
