@@ -58,7 +58,7 @@ export default function QueryVerification() {
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <SqlIcon sx={{ mr: 1, color: 'text.secondary' }} />
           <Typography variant="h6" color="text.secondary">
-            Query History
+            Verified Query
           </Typography>
         </Box>
         <Typography
@@ -86,7 +86,7 @@ export default function QueryVerification() {
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
           <SqlIcon sx={{ mr: 1, color: 'primary.main' }} />
           <Typography variant="h6" color="primary.main">
-            Query History
+            Verified Query
           </Typography>
         </Box>
         <Typography variant="body2" color="text.secondary">
