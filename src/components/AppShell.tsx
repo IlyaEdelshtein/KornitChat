@@ -83,11 +83,11 @@ export default function AppShell({ children }: AppShellProps) {
       <Box
         sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}
       >
-        <Box sx={{ flex: 1, minHeight: 0 }}>
+        <Box sx={{ flex: 0.7, minHeight: 0 }}>
           <ChatList onChatSelect={() => isMobile && setMobileOpen(false)} />
         </Box>
         <Box
-          sx={{ flex: 1, borderTop: 1, borderColor: 'divider', minHeight: 0 }}
+          sx={{ flex: 1.3, borderTop: 1, borderColor: 'divider', minHeight: 0 }}
         >
           <QueryVerification />
         </Box>
