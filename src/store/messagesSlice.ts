@@ -130,6 +130,26 @@ const messagesSlice = createSlice({
       }
     },
 
+    toggleMessageLike: (
+      state,
+      action: PayloadAction<{ messageId: string }>
+    ) => {
+      const { messageId } = action.payload;
+      if (state.byId[messageId]) {
+        state.byId[messageId].liked = !state.byId[messageId].liked;
+      }
+    },
+
+    setMessageLike: (
+      state,
+      action: PayloadAction<{ messageId: string; liked: boolean }>
+    ) => {
+      const { messageId, liked } = action.payload;
+      if (state.byId[messageId]) {
+        state.byId[messageId].liked = liked;
+      }
+    },
+
     clearMessages: (state) => {
       state.byId = {};
       state.allIds = [];
@@ -154,6 +174,8 @@ export const {
   setMessageViewMode,
   setMessageFeedback,
   setMessageFeedbackComment,
+  toggleMessageLike,
+  setMessageLike,
   clearMessages,
   deleteMessagesForChat,
 } = messagesSlice.actions;

@@ -38,6 +38,7 @@ import {
   setMessageViewMode,
   setMessageFeedback,
   setMessageFeedbackComment,
+  setMessageLike,
 } from '../store/messagesSlice';
 import {
   setExportBusy,
@@ -93,6 +94,16 @@ export default function MessageCard({ message }: MessageCardProps) {
     dispatch(
       setMessageFeedback({ messageId: message.id, feedback: newFeedback })
     );
+    
+    // Handle liked state for Verified Queries
+    if (feedback === 'like') {
+      // Toggle liked state when thumbs up is pressed
+      const newLikedState = newFeedback === 'like';
+      dispatch(setMessageLike({ messageId: message.id, liked: newLikedState }));
+    } else if (feedback === 'dislike' && message.liked) {
+      // Remove like when thumbs down is pressed (only if currently liked)
+      dispatch(setMessageLike({ messageId: message.id, liked: false }));
+    }
   };
 
   const handleFeedbackCommentChange = (
@@ -471,7 +482,7 @@ export default function MessageCard({ message }: MessageCardProps) {
                   flexWrap: 'wrap',
                 }}
               >
-                <Tooltip title="Did you like this response?">
+                <Tooltip title="Like response & add to Verified Queries">
                   <IconButton
                     size="small"
                     onClick={() => handleFeedback('like')}

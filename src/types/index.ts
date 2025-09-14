@@ -7,6 +7,7 @@ export interface Message {
   datasetKey?: string;
   feedback?: 'like' | 'dislike' | null;
   feedbackComment?: string;
+  liked?: boolean;
   createdAt: string;
 }
 

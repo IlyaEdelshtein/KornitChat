@@ -28,7 +28,7 @@ export default function QueryVerification() {
   const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const { byId: messagesById } = useAppSelector((state) => state.messages);
-  const { currentChatId, byId: chatsById } = useAppSelector(
+  const { byId: chatsById } = useAppSelector(
     (state) => state.chats
   );
 
@@ -58,82 +58,59 @@ export default function QueryVerification() {
     navigateToChatId(navigate, chatId);
   };
 
-  // Get user questions that have corresponding bot responses with SQL queries
-  const verifiedQueries = React.useMemo(() => {
-    if (!currentChatId) return [];
-
-    const currentChat = chatsById[currentChatId];
-
-    if (!currentChat) return [];
-
-    // Get all messages from current chat in chronological order
-    const allMessages = currentChat.messageIds
-      .map((id) => messagesById[id])
-      .filter(Boolean)
-      .sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      );
-
-    const questionResponsePairs = [];
-
-    // Find user questions followed by bot responses with SQL
-    for (let i = 0; i < allMessages.length - 1; i++) {
-      const userMessage = allMessages[i];
-      const botMessage = allMessages[i + 1];
-
-      if (
-        userMessage.role === 'user' &&
-        botMessage.role === 'bot' &&
-        botMessage.sql
-      ) {
-        questionResponsePairs.push({
-          userMessage,
-          botMessage,
-        });
-      }
-    }
-
-    // Filter by search query (case insensitive)
-    const filtered =
-      searchQuery.trim() === ''
-        ? questionResponsePairs
-        : questionResponsePairs.filter((pair) =>
-            pair.userMessage.text
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase())
-          );
-
-    // Return in reverse order (newest first)
-    return filtered.reverse();
-  }, [messagesById, currentChatId, chatsById, searchQuery]);
-
-  // Check if we have any queries at all (before filtering)
+  // Check if we have any liked queries at all (before filtering)
   const allVerifiedQueries = React.useMemo(() => {
-    if (!currentChatId) return [];
-    const currentChat = chatsById[currentChatId];
-    if (!currentChat) return [];
-    const allMessages = currentChat.messageIds
-      .map((id) => messagesById[id])
-      .filter(Boolean)
-      .sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-      );
-    const pairs = [];
-    for (let i = 0; i < allMessages.length - 1; i++) {
-      const userMessage = allMessages[i];
-      const botMessage = allMessages[i + 1];
-      if (
-        userMessage.role === 'user' &&
-        botMessage.role === 'bot' &&
-        botMessage.sql
-      ) {
-        pairs.push({ userMessage, botMessage });
+    // Get all chats and find liked bot messages with SQL
+    const allChats = Object.values(chatsById);
+    
+    const pairs: Array<{ userMessage: any; botMessage: any; chatId: string }> = [];
+    
+    // For each chat, find user-bot message pairs where bot message is liked
+    allChats.forEach(chat => {
+      const chatMessages = chat.messageIds
+        .map((id) => messagesById[id])
+        .filter(Boolean)
+        .sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+      
+      for (let i = 0; i < chatMessages.length - 1; i++) {
+        const userMessage = chatMessages[i];
+        const botMessage = chatMessages[i + 1];
+        if (
+          userMessage.role === 'user' &&
+          botMessage.role === 'bot' &&
+          botMessage.sql &&
+          botMessage.liked
+        ) {
+          pairs.push({ 
+            userMessage, 
+            botMessage,
+            chatId: chat.id 
+          });
+        }
       }
-    }
-    return pairs;
-  }, [messagesById, currentChatId, chatsById]);
+    });
+    
+    // Sort by creation date (newest first)
+    return pairs.sort(
+      (a, b) =>
+        new Date(b.botMessage.createdAt).getTime() - new Date(a.botMessage.createdAt).getTime()
+    );
+  }, [messagesById, chatsById]);
+
+  // Get filtered liked queries based on search
+  const verifiedQueries = React.useMemo(() => {
+    // Filter by search query (case insensitive)
+    return searchQuery.trim() === ''
+      ? allVerifiedQueries
+      : allVerifiedQueries.filter((pair) =>
+          pair.userMessage.text
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        );
+  }, [allVerifiedQueries, searchQuery]);
 
   if (allVerifiedQueries.length === 0) {
     return (
@@ -149,8 +126,7 @@ export default function QueryVerification() {
           color="text.secondary"
           sx={{ textAlign: 'center' }}
         >
-          No verified questions yet. Start a conversation to see verified
-          queries.
+          No liked questions yet. Like responses using the 👍 button to add them here.
         </Typography>
       </Box>
     );
@@ -174,7 +150,7 @@ export default function QueryVerification() {
           </Typography>
         </Box>
         <Typography variant="body2" color="text.secondary">
-          User questions with verified SQL responses
+          Liked questions from all your conversations
         </Typography>
 
         {/* Search field */}
@@ -274,7 +250,7 @@ export default function QueryVerification() {
                 }}
                 onClick={() =>
                   handleQuestionClick(
-                    currentChatId!,
+                    pair.chatId,
                     pair.botMessage.id,
                     pair.userMessage.text
                   )
