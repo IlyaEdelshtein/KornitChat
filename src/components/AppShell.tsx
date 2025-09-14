@@ -74,11 +74,15 @@ export default function AppShell({ children }: AppShellProps) {
           Kornit Chat
         </Typography>
       </Toolbar>
-      <Box sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+      <Box
+        sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}
+      >
         <Box sx={{ flex: 1, minHeight: 0 }}>
           <ChatList onChatSelect={() => isMobile && setMobileOpen(false)} />
         </Box>
-        <Box sx={{ flex: 1, borderTop: 1, borderColor: 'divider', minHeight: 0 }}>
+        <Box
+          sx={{ flex: 1, borderTop: 1, borderColor: 'divider', minHeight: 0 }}
+        >
           <QueryVerification />
         </Box>
       </Box>
