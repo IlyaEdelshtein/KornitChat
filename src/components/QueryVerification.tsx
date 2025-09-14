@@ -95,11 +95,14 @@ export default function QueryVerification() {
     }
 
     // Filter by search query (case insensitive)
-    const filtered = searchQuery.trim() === '' 
-      ? questionResponsePairs
-      : questionResponsePairs.filter(pair => 
-          pair.userMessage.text.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+    const filtered =
+      searchQuery.trim() === ''
+        ? questionResponsePairs
+        : questionResponsePairs.filter((pair) =>
+            pair.userMessage.text
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase())
+          );
 
     // Return in reverse order (newest first)
     return filtered.reverse();
@@ -113,12 +116,19 @@ export default function QueryVerification() {
     const allMessages = currentChat.messageIds
       .map((id) => messagesById[id])
       .filter(Boolean)
-      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      .sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
     const pairs = [];
     for (let i = 0; i < allMessages.length - 1; i++) {
       const userMessage = allMessages[i];
       const botMessage = allMessages[i + 1];
-      if (userMessage.role === 'user' && botMessage.role === 'bot' && botMessage.sql) {
+      if (
+        userMessage.role === 'user' &&
+        botMessage.role === 'bot' &&
+        botMessage.sql
+      ) {
         pairs.push({ userMessage, botMessage });
       }
     }
@@ -166,7 +176,7 @@ export default function QueryVerification() {
         <Typography variant="body2" color="text.secondary">
           User questions with verified SQL responses
         </Typography>
-        
+
         {/* Search field */}
         <TextField
           size="small"
@@ -180,7 +190,7 @@ export default function QueryVerification() {
           }}
           variant="outlined"
           fullWidth
-          sx={{ 
+          sx={{
             mt: 2,
             '& .MuiOutlinedInput-root': {
               fontSize: '0.875rem',
@@ -223,10 +233,7 @@ export default function QueryVerification() {
         {verifiedQueries.length === 0 && searchQuery.trim() !== '' ? (
           // Show "no search results" message
           <Box sx={{ p: 2, textAlign: 'center' }}>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-            >
+            <Typography variant="body2" color="text.secondary">
               No questions found matching "{searchQuery}"
             </Typography>
             <Typography
@@ -239,111 +246,113 @@ export default function QueryVerification() {
           </Box>
         ) : (
           verifiedQueries.map((pair, index) => (
-          <Box key={pair.userMessage.id} sx={{ mb: 1 }}>
-            <Paper
-              sx={{
-                width: '100%',
-                p: 1.5,
-                backgroundColor:
-                  theme.palette.mode === 'dark'
-                    ? 'rgba(25, 118, 210, 0.08)'
-                    : 'rgba(25, 118, 210, 0.04)',
-                border: `1px solid ${theme.palette.primary.light}`,
-                borderRadius: 1,
-                transition: 'all 0.2s ease-in-out',
-                cursor: 'pointer',
-                '&:hover': {
+            <Box key={pair.userMessage.id} sx={{ mb: 1 }}>
+              <Paper
+                sx={{
+                  width: '100%',
+                  p: 1.5,
                   backgroundColor:
                     theme.palette.mode === 'dark'
-                      ? 'rgba(25, 118, 210, 0.12)'
-                      : 'rgba(25, 118, 210, 0.08)',
-                  borderColor: theme.palette.primary.main,
-                  boxShadow: `0 2px 8px ${
-                    theme.palette.mode === 'dark'
-                      ? 'rgba(25, 118, 210, 0.2)'
-                      : 'rgba(25, 118, 210, 0.15)'
-                  }`,
-                },
-              }}
-              onClick={() =>
-                handleQuestionClick(
-                  currentChatId!,
-                  pair.botMessage.id,
-                  pair.userMessage.text
-                )
-              }
-            >
-              <Box
-                sx={{
-                  mb: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
+                      ? 'rgba(25, 118, 210, 0.08)'
+                      : 'rgba(25, 118, 210, 0.04)',
+                  border: `1px solid ${theme.palette.primary.light}`,
+                  borderRadius: 1,
+                  transition: 'all 0.2s ease-in-out',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor:
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(25, 118, 210, 0.12)'
+                        : 'rgba(25, 118, 210, 0.08)',
+                    borderColor: theme.palette.primary.main,
+                    boxShadow: `0 2px 8px ${
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(25, 118, 210, 0.2)'
+                        : 'rgba(25, 118, 210, 0.15)'
+                    }`,
+                  },
                 }}
+                onClick={() =>
+                  handleQuestionClick(
+                    currentChatId!,
+                    pair.botMessage.id,
+                    pair.userMessage.text
+                  )
+                }
               >
-                <Box>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: 'primary.main',
-                      fontWeight: 600,
-                      textTransform: 'uppercase',
-                      letterSpacing: 0.5,
-                    }}
-                  >
-                    Question #{verifiedQueries.length - index}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: 'text.secondary',
-                      ml: 1,
-                    }}
-                  >
-                    {dayjs(pair.userMessage.createdAt).format('HH:mm')}
-                  </Typography>
+                <Box
+                  sx={{
+                    mb: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Box>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'primary.main',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      Question #{verifiedQueries.length - index}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: 'text.secondary',
+                        ml: 1,
+                      }}
+                    >
+                      {dayjs(pair.userMessage.createdAt).format('HH:mm')}
+                    </Typography>
+                  </Box>
+                  <Tooltip title="Copy SQL query">
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCopyQuery(pair.botMessage.sql!);
+                      }}
+                      sx={{
+                        color: 'primary.main',
+                        '&:hover': {
+                          backgroundColor:
+                            theme.palette.mode === 'dark'
+                              ? 'rgba(25, 118, 210, 0.15)'
+                              : 'rgba(25, 118, 210, 0.1)',
+                        },
+                      }}
+                    >
+                      <CopyIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                 </Box>
-                <Tooltip title="Copy SQL query">
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCopyQuery(pair.botMessage.sql!);
-                    }}
-                    sx={{
-                      color: 'primary.main',
-                      '&:hover': {
-                        backgroundColor:
-                          theme.palette.mode === 'dark'
-                            ? 'rgba(25, 118, 210, 0.15)'
-                            : 'rgba(25, 118, 210, 0.1)',
-                      },
-                    }}
-                  >
-                    <CopyIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: theme.palette.mode === 'dark' ? '#e0f2fe' : '#1e293b',
-                  margin: 0,
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                  lineHeight: 1.4,
-                  maxHeight: '60px',
-                  overflow: 'hidden',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 3,
-                  WebkitBoxOrient: 'vertical',
-                }}
-              >
-                {pair.userMessage.text}
-              </Typography>
-            </Paper>
-          </Box>
-        )))}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color:
+                      theme.palette.mode === 'dark' ? '#e0f2fe' : '#1e293b',
+                    margin: 0,
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    lineHeight: 1.4,
+                    maxHeight: '60px',
+                    overflow: 'hidden',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: 'vertical',
+                  }}
+                >
+                  {pair.userMessage.text}
+                </Typography>
+              </Paper>
+            </Box>
+          ))
+        )}
       </Box>
     </Box>
   );
