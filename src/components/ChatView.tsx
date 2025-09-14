@@ -58,19 +58,23 @@ export default function ChatView() {
   // Show empty state if no chats exist OR if showEmptyState is true AND no specific chat is selected
   if (Object.keys(chatsById).length === 0 || (showEmptyState && !chatId)) {
     return (
-      <Box sx={{ 
-        height: '100%', 
-        display: 'flex', 
-        flexDirection: 'column',
-        overflow: 'hidden'
-      }}>
-        <Box sx={{ 
-          flex: 1, 
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          p: 2,
-          minHeight: 0
-        }}>
+      <Box
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        <Box
+          sx={{
+            flex: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            p: 2,
+            minHeight: 0,
+          }}
+        >
           <EmptyState showCreateButton={true} />
         </Box>
         <Box sx={{ flexShrink: 0 }}>
@@ -83,19 +87,23 @@ export default function ChatView() {
   // If we have a chatId but no valid chat, show empty state
   if (chatId && !currentChat) {
     return (
-      <Box sx={{ 
-        height: '100%', 
-        display: 'flex', 
-        flexDirection: 'column',
-        overflow: 'hidden'
-      }}>
-        <Box sx={{ 
-          flex: 1, 
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          p: 2,
-          minHeight: 0
-        }}>
+      <Box
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        <Box
+          sx={{
+            flex: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            p: 2,
+            minHeight: 0,
+          }}
+        >
           <EmptyState showCreateButton={true} />
         </Box>
         <Box sx={{ flexShrink: 0 }}>
@@ -106,20 +114,24 @@ export default function ChatView() {
   }
 
   return (
-    <Box sx={{ 
-      height: '100%', 
-      display: 'flex', 
-      flexDirection: 'column',
-      overflow: 'hidden'
-    }}>
+    <Box
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+      }}
+    >
       {/* Messages area - scrollable */}
-      <Box sx={{ 
-        flex: 1, 
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        p: 2,
-        minHeight: 0
-      }}>
+      <Box
+        sx={{
+          flex: 1,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          p: 2,
+          minHeight: 0,
+        }}
+      >
         {messages.length === 0 ? (
           <EmptyState showCreateButton={false} />
         ) : (
@@ -131,7 +143,7 @@ export default function ChatView() {
           </>
         )}
       </Box>
-      
+
       {/* Composer - fixed at bottom */}
       <Box sx={{ flexShrink: 0 }}>
         <Composer chatId={currentChat?.id || null} disabled={false} />

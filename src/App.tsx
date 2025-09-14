@@ -16,7 +16,7 @@ import { getBaseName } from './utils/navigation';
 
 function ThemedApp() {
   const themeMode = useAppSelector((state) => state.ui.themeMode);
-  
+
   // Use dynamic basename for GitHub Pages
   const basename = getBaseName();
 

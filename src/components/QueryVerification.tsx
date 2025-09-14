@@ -73,12 +73,14 @@ export default function QueryVerification() {
   }
 
   return (
-    <Box sx={{ 
-      height: '100%', 
-      display: 'flex', 
-      flexDirection: 'column',
-      overflow: 'hidden'
-    }}>
+    <Box
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+      }}
+    >
       {/* Header */}
       <Box sx={{ p: 2, pb: 1, flexShrink: 0 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -95,13 +97,15 @@ export default function QueryVerification() {
       <Divider sx={{ flexShrink: 0 }} />
 
       {/* Scrollable content */}
-      <Box sx={{ 
-        flex: 1,
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        px: 1,
-        py: 1
-      }}>
+      <Box
+        sx={{
+          flex: 1,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          px: 1,
+          py: 1,
+        }}
+      >
         {sqlQueries.map((message, index) => (
           <Box key={message.id} sx={{ mb: 1 }}>
             <Paper
@@ -183,8 +187,7 @@ export default function QueryVerification() {
                 sx={{
                   fontFamily: 'monospace',
                   fontSize: '0.75rem',
-                  color:
-                    theme.palette.mode === 'dark' ? '#e0f2fe' : '#1e293b',
+                  color: theme.palette.mode === 'dark' ? '#e0f2fe' : '#1e293b',
                   margin: 0,
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word',
