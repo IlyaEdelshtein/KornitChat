@@ -17,6 +17,10 @@ import {
   ToggleButtonGroup,
   TextField,
   InputAdornment,
+  FormControl,
+  Select,
+  InputLabel,
+  SelectChangeEvent,
 } from '@mui/material';
 import {
   ThumbUp,
@@ -54,6 +58,8 @@ export default function MessageCard({ message }: MessageCardProps) {
     null
   );
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
+  const [xAxis, setXAxis] = useState<string>('date');
+  const [yAxis, setYAxis] = useState<string>('revenue');
   const [feedbackComment, setFeedbackComment] = useState(
     message.feedbackComment || ''
   );
@@ -108,6 +114,24 @@ export default function MessageCard({ message }: MessageCardProps) {
       setChartType(newChartType);
     }
   };
+
+  const handleXAxisChange = (event: SelectChangeEvent<string>) => {
+    setXAxis(event.target.value);
+  };
+
+  const handleYAxisChange = (event: SelectChangeEvent<string>) => {
+    setYAxis(event.target.value);
+  };
+
+  // Available columns for axis selection
+  const availableColumns = [
+    { value: 'date', label: 'Date' },
+    { value: 'product', label: 'Product' },
+    { value: 'units', label: 'Units' },
+    { value: 'revenue', label: 'Revenue' },
+    { value: 'country', label: 'Country' },
+    { value: 'channel', label: 'Channel' },
+  ];
 
   const handleExport = async (format: 'csv' | 'xlsx') => {
     if (!message.datasetKey || isExportBusy) return;
@@ -287,7 +311,7 @@ export default function MessageCard({ message }: MessageCardProps) {
 
             {/* Chart type toggle - only show when chart is visible */}
             {(message.viewMode === 'chart' || message.viewMode === 'both') && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                 <Typography variant="body2" color="text.secondary">
                   Chart:
                 </Typography>
@@ -304,6 +328,42 @@ export default function MessageCard({ message }: MessageCardProps) {
                     <BarChart />
                   </ToggleButton>
                 </ToggleButtonGroup>
+
+                {/* X-Axis selector */}
+                <FormControl size="small" sx={{ minWidth: 80 }}>
+                  <InputLabel id="x-axis-select-label">X-Axis</InputLabel>
+                  <Select
+                    labelId="x-axis-select-label"
+                    value={xAxis}
+                    onChange={handleXAxisChange}
+                    label="X-Axis"
+                    sx={{ fontSize: '0.875rem' }}
+                  >
+                    {availableColumns.map((column) => (
+                      <MenuItem key={column.value} value={column.value}>
+                        {column.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                {/* Y-Axis selector */}
+                <FormControl size="small" sx={{ minWidth: 80 }}>
+                  <InputLabel id="y-axis-select-label">Y-Axis</InputLabel>
+                  <Select
+                    labelId="y-axis-select-label"
+                    value={yAxis}
+                    onChange={handleYAxisChange}
+                    label="Y-Axis"
+                    sx={{ fontSize: '0.875rem' }}
+                  >
+                    {availableColumns.map((column) => (
+                      <MenuItem key={column.value} value={column.value}>
+                        {column.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Box>
             )}
           </Box>
