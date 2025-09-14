@@ -94,7 +94,7 @@ export default function MessageCard({ message }: MessageCardProps) {
     dispatch(
       setMessageFeedback({ messageId: message.id, feedback: newFeedback })
     );
-    
+
     // Handle liked state for Verified Queries
     if (feedback === 'like') {
       // Toggle liked state when thumbs up is pressed

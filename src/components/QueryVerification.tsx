@@ -28,9 +28,7 @@ export default function QueryVerification() {
   const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const { byId: messagesById } = useAppSelector((state) => state.messages);
-  const { byId: chatsById } = useAppSelector(
-    (state) => state.chats
-  );
+  const { byId: chatsById } = useAppSelector((state) => state.chats);
 
   const handleCopyQuery = async (sql: string) => {
     try {
@@ -62,11 +60,12 @@ export default function QueryVerification() {
   const allVerifiedQueries = React.useMemo(() => {
     // Get all chats and find liked bot messages with SQL
     const allChats = Object.values(chatsById);
-    
-    const pairs: Array<{ userMessage: any; botMessage: any; chatId: string }> = [];
-    
+
+    const pairs: Array<{ userMessage: any; botMessage: any; chatId: string }> =
+      [];
+
     // For each chat, find user-bot message pairs where bot message is liked
-    allChats.forEach(chat => {
+    allChats.forEach((chat) => {
       const chatMessages = chat.messageIds
         .map((id) => messagesById[id])
         .filter(Boolean)
@@ -74,7 +73,7 @@ export default function QueryVerification() {
           (a, b) =>
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
         );
-      
+
       for (let i = 0; i < chatMessages.length - 1; i++) {
         const userMessage = chatMessages[i];
         const botMessage = chatMessages[i + 1];
@@ -84,19 +83,20 @@ export default function QueryVerification() {
           botMessage.sql &&
           botMessage.liked
         ) {
-          pairs.push({ 
-            userMessage, 
+          pairs.push({
+            userMessage,
             botMessage,
-            chatId: chat.id 
+            chatId: chat.id,
           });
         }
       }
     });
-    
+
     // Sort by creation date (newest first)
     return pairs.sort(
       (a, b) =>
-        new Date(b.botMessage.createdAt).getTime() - new Date(a.botMessage.createdAt).getTime()
+        new Date(b.botMessage.createdAt).getTime() -
+        new Date(a.botMessage.createdAt).getTime()
     );
   }, [messagesById, chatsById]);
 
@@ -126,7 +126,8 @@ export default function QueryVerification() {
           color="text.secondary"
           sx={{ textAlign: 'center' }}
         >
-          No liked questions yet. Like responses using the 👍 button to add them here.
+          No liked questions yet. Like responses using the 👍 button to add them
+          here.
         </Typography>
       </Box>
     );
