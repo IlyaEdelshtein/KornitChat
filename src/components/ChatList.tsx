@@ -21,7 +21,12 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store';
-import { createChat, deleteChat, setCurrentChat, setShowEmptyState } from '../store/chatsSlice';
+import {
+  createChat,
+  deleteChat,
+  setCurrentChat,
+  setShowEmptyState,
+} from '../store/chatsSlice';
 import { deleteMessagesForChat } from '../store/messagesSlice';
 import { setSqlOnlyView } from '../store/uiSlice';
 import { navigateToChatId, navigateToChat } from '../utils/navigation';

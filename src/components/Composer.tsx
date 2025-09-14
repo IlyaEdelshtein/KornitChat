@@ -36,7 +36,7 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
   const textFieldRef = useRef<HTMLTextAreaElement>(null);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
+
   // Always call useAppSelector - don't conditionally call hooks
   const chatsById = useAppSelector((state) => state.chats.byId);
 
@@ -57,7 +57,7 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
 
     // Check if this will be the first message (before adding anything)
     let isFirstMessage = false;
-    
+
     // If no chatId provided, create a new chat
     if (!actualChatId) {
       const newChatAction = dispatch(createChat());
@@ -69,7 +69,9 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
     } else {
       // Check if existing chat has no messages
       const existingChat = chatsById[actualChatId];
-      isFirstMessage = existingChat ? existingChat.messageIds.length === 0 : false;
+      isFirstMessage = existingChat
+        ? existingChat.messageIds.length === 0
+        : false;
     }
 
     // Add user message
