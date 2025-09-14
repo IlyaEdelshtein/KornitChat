@@ -15,6 +15,8 @@ import {
   Tooltip,
   ToggleButton,
   ToggleButtonGroup,
+  TextField,
+  InputAdornment,
 } from '@mui/material';
 import {
   ThumbUp,
@@ -25,9 +27,14 @@ import {
   ViewList,
   ShowChart,
   SmartToy,
+  Send,
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../store';
-import { setMessageViewMode, setMessageFeedback } from '../store/messagesSlice';
+import {
+  setMessageViewMode,
+  setMessageFeedback,
+  setMessageFeedbackComment,
+} from '../store/messagesSlice';
 import { setExportBusy, openSnackbar } from '../store/uiSlice';
 import { Message } from '../types';
 import { getMockResult } from '../utils/mockHelpers';
@@ -47,6 +54,9 @@ export default function MessageCard({ message }: MessageCardProps) {
     null
   );
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
+  const [feedbackComment, setFeedbackComment] = useState(
+    message.feedbackComment || ''
+  );
 
   const isExportBusy = exportBusyMessageIds.includes(message.id);
 
@@ -58,6 +68,27 @@ export default function MessageCard({ message }: MessageCardProps) {
     const newFeedback = message.feedback === feedback ? null : feedback;
     dispatch(
       setMessageFeedback({ messageId: message.id, feedback: newFeedback })
+    );
+  };
+
+  const handleFeedbackCommentChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newComment = event.target.value;
+    setFeedbackComment(newComment);
+    dispatch(
+      setMessageFeedbackComment({
+        messageId: message.id,
+        feedbackComment: newComment,
+      })
+    );
+  };
+
+  const handleSubmitFeedback = () => {
+    // For now, just clear the input - later we'll add server logic
+    setFeedbackComment('');
+    dispatch(
+      setMessageFeedbackComment({ messageId: message.id, feedbackComment: '' })
     );
   };
 
@@ -316,7 +347,15 @@ export default function MessageCard({ message }: MessageCardProps) {
           )}
 
           {/* Actions */}
-          <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box
+            sx={{
+              mt: 2,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              flexWrap: 'wrap',
+            }}
+          >
             <Tooltip title="Did you like this response?">
               <IconButton
                 size="small"
@@ -335,6 +374,40 @@ export default function MessageCard({ message }: MessageCardProps) {
                 <ThumbDown fontSize="small" />
               </IconButton>
             </Tooltip>
+
+            <TextField
+              size="small"
+              placeholder="Rate response quality..."
+              value={feedbackComment}
+              onChange={handleFeedbackCommentChange}
+              variant="outlined"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      size="small"
+                      onClick={handleSubmitFeedback}
+                      disabled={!feedbackComment.trim()}
+                      sx={{
+                        color: feedbackComment.trim()
+                          ? 'primary.main'
+                          : 'action.disabled',
+                      }}
+                    >
+                      <Send fontSize="small" />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                minWidth: 200,
+                maxWidth: 300,
+                '& .MuiOutlinedInput-root': {
+                  fontSize: '0.875rem',
+                  borderRadius: 1,
+                },
+              }}
+            />
 
             <Box sx={{ flexGrow: 1 }} />
 

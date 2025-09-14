@@ -67,6 +67,7 @@ const messagesSlice = createSlice({
           viewMode: 'table', // Default view mode
           datasetKey,
           feedback: null,
+          feedbackComment: '',
           createdAt,
         };
 
@@ -116,6 +117,19 @@ const messagesSlice = createSlice({
       }
     },
 
+    setMessageFeedbackComment: (
+      state,
+      action: PayloadAction<{
+        messageId: string;
+        feedbackComment: string;
+      }>
+    ) => {
+      const { messageId, feedbackComment } = action.payload;
+      if (state.byId[messageId]) {
+        state.byId[messageId].feedbackComment = feedbackComment;
+      }
+    },
+
     clearMessages: (state) => {
       state.byId = {};
       state.allIds = [];
@@ -139,6 +153,7 @@ export const {
   addBotMessage,
   setMessageViewMode,
   setMessageFeedback,
+  setMessageFeedbackComment,
   clearMessages,
   deleteMessagesForChat,
 } = messagesSlice.actions;

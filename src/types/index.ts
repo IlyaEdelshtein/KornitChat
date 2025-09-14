@@ -6,6 +6,7 @@ export interface Message {
   viewMode?: 'table' | 'chart' | 'both';
   datasetKey?: string;
   feedback?: 'like' | 'dislike' | null;
+  feedbackComment?: string;
   createdAt: string;
 }
 
