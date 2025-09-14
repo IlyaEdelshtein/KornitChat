@@ -23,6 +23,7 @@ import { useAppSelector, useAppDispatch } from '../store';
 import { closeSnackbar, setThemeMode } from '../store/uiSlice';
 import { logout } from '../store/authSlice';
 import ChatList from './ChatList';
+import QueryVerification from './QueryVerification';
 
 const DRAWER_WIDTH = 280;
 
@@ -55,7 +56,7 @@ export default function AppShell({ children }: AppShellProps) {
   };
 
   const drawer = (
-    <Box>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Toolbar sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Box
           component="img"
@@ -73,7 +74,12 @@ export default function AppShell({ children }: AppShellProps) {
           Kornit Chat
         </Typography>
       </Toolbar>
-      <ChatList onChatSelect={() => isMobile && setMobileOpen(false)} />
+      <Box sx={{ flex: 1, minHeight: 0 }}>
+        <ChatList onChatSelect={() => isMobile && setMobileOpen(false)} />
+      </Box>
+      <Box sx={{ height: '300px', borderTop: 1, borderColor: 'divider' }}>
+        <QueryVerification />
+      </Box>
     </Box>
   );
 
