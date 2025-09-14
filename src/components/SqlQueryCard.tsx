@@ -1,4 +1,3 @@
-
 import {
   Box,
   Card,
@@ -23,7 +22,11 @@ interface SqlQueryCardProps {
   onClose: () => void;
 }
 
-export default function SqlQueryCard({ message, userQuestion, onClose }: SqlQueryCardProps) {
+export default function SqlQueryCard({
+  message,
+  userQuestion,
+  onClose,
+}: SqlQueryCardProps) {
   const theme = useTheme();
 
   const handleCopyQuery = async (sql: string) => {
@@ -56,7 +59,14 @@ export default function SqlQueryCard({ message, userQuestion, onClose }: SqlQuer
       >
         <CardContent>
           {/* Header */}
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              mb: 2,
+            }}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <SqlIcon
                 sx={{
@@ -129,7 +139,14 @@ export default function SqlQueryCard({ message, userQuestion, onClose }: SqlQuer
 
           {/* SQL Query */}
           <Box sx={{ position: 'relative' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                mb: 2,
+              }}
+            >
               <Typography
                 variant="h6"
                 sx={{
@@ -167,7 +184,7 @@ export default function SqlQueryCard({ message, userQuestion, onClose }: SqlQuer
                 </Tooltip>
               </Box>
             </Box>
-            
+
             <Paper
               sx={{
                 p: 3,

@@ -39,7 +39,11 @@ import {
   setMessageFeedback,
   setMessageFeedbackComment,
 } from '../store/messagesSlice';
-import { setExportBusy, openSnackbar, setFocusedSqlMessageId } from '../store/uiSlice';
+import {
+  setExportBusy,
+  openSnackbar,
+  setFocusedSqlMessageId,
+} from '../store/uiSlice';
 import { Message } from '../types';
 import { getMockResult } from '../utils/mockHelpers';
 import { downloadCsv, downloadXlsx } from '../utils/exportUtils';
@@ -53,7 +57,9 @@ interface MessageCardProps {
 export default function MessageCard({ message }: MessageCardProps) {
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  const { exportBusyMessageIds, focusedSqlMessageId } = useAppSelector((state) => state.ui);
+  const { exportBusyMessageIds, focusedSqlMessageId } = useAppSelector(
+    (state) => state.ui
+  );
   const [exportMenuAnchor, setExportMenuAnchor] = useState<null | HTMLElement>(
     null
   );
@@ -239,8 +245,8 @@ export default function MessageCard({ message }: MessageCardProps) {
               Kornit AI Assistant
             </Typography>
           </Box>
-          
-          {/* Show only SQL title when focused */}  
+
+          {/* Show only SQL title when focused */}
           {isFocusedForSql ? (
             <Typography
               variant="h6"
@@ -275,14 +281,16 @@ export default function MessageCard({ message }: MessageCardProps) {
                     ? 'rgba(0, 0, 0, 0.4)'
                     : 'rgba(255, 255, 255, 0.8)',
                 border: `1px solid ${
-                  isFocusedForSql ? theme.palette.primary.main : theme.palette.primary.light
+                  isFocusedForSql
+                    ? theme.palette.primary.main
+                    : theme.palette.primary.light
                 }`,
                 borderRadius: 2,
                 fontFamily: 'monospace',
                 fontSize: '0.9rem',
                 overflowX: 'auto',
                 backdropFilter: 'blur(5px)',
-                boxShadow: isFocusedForSql 
+                boxShadow: isFocusedForSql
                   ? `0 0 0 2px ${theme.palette.primary.main}30`
                   : 'none',
               }}
@@ -304,226 +312,238 @@ export default function MessageCard({ message }: MessageCardProps) {
           {!isFocusedForSql && (
             <>
               {/* View mode toggle */}
-          <Box
-            sx={{
-              mb: 2,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              flexWrap: 'wrap',
-            }}
-          >
-            <Typography variant="body2" color="text.secondary">
-              View:
-            </Typography>
-            <ButtonGroup size="small" variant="outlined">
-              <Button
-                startIcon={<TableChart />}
-                variant={
-                  message.viewMode === 'table' ? 'contained' : 'outlined'
-                }
-                onClick={() => handleViewModeChange('table')}
+              <Box
+                sx={{
+                  mb: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  flexWrap: 'wrap',
+                }}
               >
-                Table
-              </Button>
-              <Button
-                startIcon={<BarChart />}
-                variant={
-                  message.viewMode === 'chart' ? 'contained' : 'outlined'
-                }
-                onClick={() => handleViewModeChange('chart')}
-              >
-                Chart
-              </Button>
-              <Button
-                startIcon={<ViewList />}
-                variant={message.viewMode === 'both' ? 'contained' : 'outlined'}
-                onClick={() => handleViewModeChange('both')}
-              >
-                Both
-              </Button>
-            </ButtonGroup>
-
-            {/* Chart type toggle - only show when chart is visible */}
-            {(message.viewMode === 'chart' || message.viewMode === 'both') && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                 <Typography variant="body2" color="text.secondary">
-                  Chart:
+                  View:
                 </Typography>
-                <ToggleButtonGroup
-                  value={chartType}
-                  exclusive
-                  onChange={handleChartTypeChange}
-                  size="small"
-                >
-                  <ToggleButton value="line" aria-label="line chart">
-                    <ShowChart />
-                  </ToggleButton>
-                  <ToggleButton value="bar" aria-label="bar chart">
-                    <BarChart />
-                  </ToggleButton>
-                </ToggleButtonGroup>
-
-                {/* X-Axis selector */}
-                <FormControl size="small" sx={{ minWidth: 80 }}>
-                  <InputLabel id="x-axis-select-label">X-Axis</InputLabel>
-                  <Select
-                    labelId="x-axis-select-label"
-                    value={xAxis}
-                    onChange={handleXAxisChange}
-                    label="X-Axis"
-                    sx={{ fontSize: '0.875rem' }}
+                <ButtonGroup size="small" variant="outlined">
+                  <Button
+                    startIcon={<TableChart />}
+                    variant={
+                      message.viewMode === 'table' ? 'contained' : 'outlined'
+                    }
+                    onClick={() => handleViewModeChange('table')}
                   >
-                    {availableColumns.map((column) => (
-                      <MenuItem key={column.value} value={column.value}>
-                        {column.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-
-                {/* Y-Axis selector */}
-                <FormControl size="small" sx={{ minWidth: 80 }}>
-                  <InputLabel id="y-axis-select-label">Y-Axis</InputLabel>
-                  <Select
-                    labelId="y-axis-select-label"
-                    value={yAxis}
-                    onChange={handleYAxisChange}
-                    label="Y-Axis"
-                    sx={{ fontSize: '0.875rem' }}
+                    Table
+                  </Button>
+                  <Button
+                    startIcon={<BarChart />}
+                    variant={
+                      message.viewMode === 'chart' ? 'contained' : 'outlined'
+                    }
+                    onClick={() => handleViewModeChange('chart')}
                   >
-                    {availableColumns.map((column) => (
-                      <MenuItem key={column.value} value={column.value}>
-                        {column.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            )}
-          </Box>
+                    Chart
+                  </Button>
+                  <Button
+                    startIcon={<ViewList />}
+                    variant={
+                      message.viewMode === 'both' ? 'contained' : 'outlined'
+                    }
+                    onClick={() => handleViewModeChange('both')}
+                  >
+                    Both
+                  </Button>
+                </ButtonGroup>
 
-          {/* Result display */}
-          {(message.viewMode === 'table' || message.viewMode === 'both') && (
-            <Paper
-              sx={{
-                mb: message.viewMode === 'both' ? 2 : 0,
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: 2,
-                border: `1px solid ${theme.palette.divider}`,
-                overflow: 'hidden',
-                boxShadow: `0 2px 8px ${
-                  theme.palette.mode === 'dark'
-                    ? 'rgba(0, 0, 0, 0.3)'
-                    : 'rgba(0, 0, 0, 0.1)'
-                }`,
-              }}
-            >
-              <ResultTable data={mockResult.rows} />
-            </Paper>
-          )}
-
-          {(message.viewMode === 'chart' || message.viewMode === 'both') && (
-            <Paper
-              sx={{
-                p: 3,
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: 2,
-                border: `1px solid ${theme.palette.divider}`,
-                boxShadow: `0 2px 8px ${
-                  theme.palette.mode === 'dark'
-                    ? 'rgba(0, 0, 0, 0.3)'
-                    : 'rgba(0, 0, 0, 0.1)'
-                }`,
-              }}
-            >
-              <ResultChart data={mockResult.rows} chartType={chartType} />
-            </Paper>
-          )}
-
-          {/* Actions */}
-          <Box
-            sx={{
-              mt: 2,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              flexWrap: 'wrap',
-            }}
-          >
-            <Tooltip title="Did you like this response?">
-              <IconButton
-                size="small"
-                onClick={() => handleFeedback('like')}
-                color={message.feedback === 'like' ? 'primary' : 'default'}
-              >
-                <ThumbUp fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Was this response not helpful?">
-              <IconButton
-                size="small"
-                onClick={() => handleFeedback('dislike')}
-                color={message.feedback === 'dislike' ? 'error' : 'default'}
-              >
-                <ThumbDown fontSize="small" />
-              </IconButton>
-            </Tooltip>
-
-            <TextField
-              size="small"
-              placeholder="Rate response quality..."
-              value={feedbackComment}
-              onChange={handleFeedbackCommentChange}
-              variant="outlined"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
+                {/* Chart type toggle - only show when chart is visible */}
+                {(message.viewMode === 'chart' ||
+                  message.viewMode === 'both') && (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      flexWrap: 'wrap',
+                    }}
+                  >
+                    <Typography variant="body2" color="text.secondary">
+                      Chart:
+                    </Typography>
+                    <ToggleButtonGroup
+                      value={chartType}
+                      exclusive
+                      onChange={handleChartTypeChange}
                       size="small"
-                      onClick={handleSubmitFeedback}
-                      disabled={!feedbackComment.trim()}
-                      sx={{
-                        color: feedbackComment.trim()
-                          ? 'primary.main'
-                          : 'action.disabled',
-                      }}
                     >
-                      <Send fontSize="small" />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                minWidth: 200,
-                maxWidth: 300,
-                '& .MuiOutlinedInput-root': {
-                  fontSize: '0.875rem',
-                  borderRadius: 1,
-                },
-              }}
-            />
+                      <ToggleButton value="line" aria-label="line chart">
+                        <ShowChart />
+                      </ToggleButton>
+                      <ToggleButton value="bar" aria-label="bar chart">
+                        <BarChart />
+                      </ToggleButton>
+                    </ToggleButtonGroup>
 
-            <Box sx={{ flexGrow: 1 }} />
+                    {/* X-Axis selector */}
+                    <FormControl size="small" sx={{ minWidth: 80 }}>
+                      <InputLabel id="x-axis-select-label">X-Axis</InputLabel>
+                      <Select
+                        labelId="x-axis-select-label"
+                        value={xAxis}
+                        onChange={handleXAxisChange}
+                        label="X-Axis"
+                        sx={{ fontSize: '0.875rem' }}
+                      >
+                        {availableColumns.map((column) => (
+                          <MenuItem key={column.value} value={column.value}>
+                            {column.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
 
-            <Button
-              size="small"
-              startIcon={<FileDownload />}
-              onClick={handleExportMenuOpen}
-              disabled={isExportBusy}
-            >
-              Export
-            </Button>
+                    {/* Y-Axis selector */}
+                    <FormControl size="small" sx={{ minWidth: 80 }}>
+                      <InputLabel id="y-axis-select-label">Y-Axis</InputLabel>
+                      <Select
+                        labelId="y-axis-select-label"
+                        value={yAxis}
+                        onChange={handleYAxisChange}
+                        label="Y-Axis"
+                        sx={{ fontSize: '0.875rem' }}
+                      >
+                        {availableColumns.map((column) => (
+                          <MenuItem key={column.value} value={column.value}>
+                            {column.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                )}
+              </Box>
 
-            {isExportBusy && (
-              <Chip
-                label="Processing..."
-                size="small"
-                color="primary"
-                variant="outlined"
-              />
-            )}
-          </Box>
+              {/* Result display */}
+              {(message.viewMode === 'table' ||
+                message.viewMode === 'both') && (
+                <Paper
+                  sx={{
+                    mb: message.viewMode === 'both' ? 2 : 0,
+                    backgroundColor: theme.palette.background.paper,
+                    borderRadius: 2,
+                    border: `1px solid ${theme.palette.divider}`,
+                    overflow: 'hidden',
+                    boxShadow: `0 2px 8px ${
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(0, 0, 0, 0.3)'
+                        : 'rgba(0, 0, 0, 0.1)'
+                    }`,
+                  }}
+                >
+                  <ResultTable data={mockResult.rows} />
+                </Paper>
+              )}
+
+              {(message.viewMode === 'chart' ||
+                message.viewMode === 'both') && (
+                <Paper
+                  sx={{
+                    p: 3,
+                    backgroundColor: theme.palette.background.paper,
+                    borderRadius: 2,
+                    border: `1px solid ${theme.palette.divider}`,
+                    boxShadow: `0 2px 8px ${
+                      theme.palette.mode === 'dark'
+                        ? 'rgba(0, 0, 0, 0.3)'
+                        : 'rgba(0, 0, 0, 0.1)'
+                    }`,
+                  }}
+                >
+                  <ResultChart data={mockResult.rows} chartType={chartType} />
+                </Paper>
+              )}
+
+              {/* Actions */}
+              <Box
+                sx={{
+                  mt: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  flexWrap: 'wrap',
+                }}
+              >
+                <Tooltip title="Did you like this response?">
+                  <IconButton
+                    size="small"
+                    onClick={() => handleFeedback('like')}
+                    color={message.feedback === 'like' ? 'primary' : 'default'}
+                  >
+                    <ThumbUp fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Was this response not helpful?">
+                  <IconButton
+                    size="small"
+                    onClick={() => handleFeedback('dislike')}
+                    color={message.feedback === 'dislike' ? 'error' : 'default'}
+                  >
+                    <ThumbDown fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+
+                <TextField
+                  size="small"
+                  placeholder="Rate response quality..."
+                  value={feedbackComment}
+                  onChange={handleFeedbackCommentChange}
+                  variant="outlined"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          size="small"
+                          onClick={handleSubmitFeedback}
+                          disabled={!feedbackComment.trim()}
+                          sx={{
+                            color: feedbackComment.trim()
+                              ? 'primary.main'
+                              : 'action.disabled',
+                          }}
+                        >
+                          <Send fontSize="small" />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    minWidth: 200,
+                    maxWidth: 300,
+                    '& .MuiOutlinedInput-root': {
+                      fontSize: '0.875rem',
+                      borderRadius: 1,
+                    },
+                  }}
+                />
+
+                <Box sx={{ flexGrow: 1 }} />
+
+                <Button
+                  size="small"
+                  startIcon={<FileDownload />}
+                  onClick={handleExportMenuOpen}
+                  disabled={isExportBusy}
+                >
+                  Export
+                </Button>
+
+                {isExportBusy && (
+                  <Chip
+                    label="Processing..."
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                  />
+                )}
+              </Box>
             </>
           )}
         </CardContent>

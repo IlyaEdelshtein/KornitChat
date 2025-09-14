@@ -141,14 +141,18 @@ export default function ChatView() {
           // Show only SQL query card when in SQL-only mode
           <>
             {(() => {
-              const sqlMessage = messages.find(m => m.id === sqlOnlyView.messageId);
+              const sqlMessage = messages.find(
+                (m) => m.id === sqlOnlyView.messageId
+              );
               if (sqlMessage && sqlMessage.sql) {
                 return (
                   <SqlQueryCard
                     key={sqlMessage.id}
                     message={sqlMessage}
                     userQuestion={sqlOnlyView.userQuestion || ''}
-                    onClose={() => dispatch(setSqlOnlyView({ isActive: false }))}
+                    onClose={() =>
+                      dispatch(setSqlOnlyView({ isActive: false }))
+                    }
                   />
                 );
               }

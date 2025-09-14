@@ -25,16 +25,16 @@ const uiSlice = createSlice({
       state.snackbar.open = true;
       state.snackbar.message = action.payload;
     },
-    
+
     closeSnackbar: (state) => {
       state.snackbar.open = false;
       state.snackbar.message = '';
     },
-    
+
     setThemeMode: (state, action: PayloadAction<'light' | 'dark'>) => {
       state.themeMode = action.payload;
     },
-    
+
     setExportBusy: (
       state,
       action: PayloadAction<{ messageId: string; busy: boolean }>
@@ -46,19 +46,19 @@ const uiSlice = createSlice({
         }
       } else {
         state.exportBusyMessageIds = state.exportBusyMessageIds.filter(
-          id => id !== messageId
+          (id) => id !== messageId
         );
       }
     },
-    
+
     setIsTyping: (state, action: PayloadAction<boolean>) => {
       state.isTyping = action.payload;
     },
-    
+
     setFocusedSqlMessageId: (state, action: PayloadAction<string | null>) => {
       state.focusedSqlMessageId = action.payload;
     },
-    
+
     setSqlOnlyView: (
       state,
       action: PayloadAction<{

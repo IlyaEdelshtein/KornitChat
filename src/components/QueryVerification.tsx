@@ -36,13 +36,19 @@ export default function QueryVerification() {
     }
   };
 
-  const handleQuestionClick = (chatId: string, botMessageId: string, userQuestion: string) => {
+  const handleQuestionClick = (
+    chatId: string,
+    botMessageId: string,
+    userQuestion: string
+  ) => {
     // Activate SQL-only view mode
-    dispatch(setSqlOnlyView({
-      isActive: true,
-      messageId: botMessageId,
-      userQuestion: userQuestion,
-    }));
+    dispatch(
+      setSqlOnlyView({
+        isActive: true,
+        messageId: botMessageId,
+        userQuestion: userQuestion,
+      })
+    );
     // Navigate to the chat
     navigateToChatId(navigate, chatId);
   };
@@ -101,7 +107,8 @@ export default function QueryVerification() {
           color="text.secondary"
           sx={{ textAlign: 'center' }}
         >
-          No verified questions yet. Start a conversation to see verified queries.
+          No verified questions yet. Start a conversation to see verified
+          queries.
         </Typography>
       </Box>
     );
@@ -168,7 +175,13 @@ export default function QueryVerification() {
                   }`,
                 },
               }}
-              onClick={() => handleQuestionClick(currentChatId!, pair.botMessage.id, pair.userMessage.text)}
+              onClick={() =>
+                handleQuestionClick(
+                  currentChatId!,
+                  pair.botMessage.id,
+                  pair.userMessage.text
+                )
+              }
             >
               <Box
                 sx={{
