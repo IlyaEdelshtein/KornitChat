@@ -33,7 +33,13 @@ function ThemedApp() {
     components: {
       MuiCssBaseline: {
         styleOverrides: {
+          html: {
+            height: '100%',
+            overflow: 'hidden',
+          },
           body: {
+            height: '100%',
+            overflow: 'hidden',
             scrollbarWidth: 'thin',
             '&::-webkit-scrollbar': {
               width: '8px',
@@ -45,6 +51,10 @@ function ThemedApp() {
               backgroundColor: 'rgba(0,0,0,.2)',
               borderRadius: '4px',
             },
+          },
+          '#root': {
+            height: '100%',
+            overflow: 'hidden',
           },
         },
       },
