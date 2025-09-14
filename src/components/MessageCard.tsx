@@ -39,7 +39,7 @@ import {
   setMessageFeedback,
   setMessageFeedbackComment,
 } from '../store/messagesSlice';
-import { setExportBusy, openSnackbar } from '../store/uiSlice';
+import { setExportBusy, openSnackbar, setFocusedSqlMessageId } from '../store/uiSlice';
 import { Message } from '../types';
 import { getMockResult } from '../utils/mockHelpers';
 import { downloadCsv, downloadXlsx } from '../utils/exportUtils';
@@ -53,7 +53,7 @@ interface MessageCardProps {
 export default function MessageCard({ message }: MessageCardProps) {
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  const { exportBusyMessageIds } = useAppSelector((state) => state.ui);
+  const { exportBusyMessageIds, focusedSqlMessageId } = useAppSelector((state) => state.ui);
   const [exportMenuAnchor, setExportMenuAnchor] = useState<null | HTMLElement>(
     null
   );
@@ -65,6 +65,18 @@ export default function MessageCard({ message }: MessageCardProps) {
   );
 
   const isExportBusy = exportBusyMessageIds.includes(message.id);
+  const isFocusedForSql = focusedSqlMessageId === message.id;
+
+  // Clear the focused SQL message ID after showing once
+  React.useEffect(() => {
+    if (isFocusedForSql && message.sql) {
+      // Clear the focus after a short delay to allow the component to render
+      const timer = setTimeout(() => {
+        dispatch(setFocusedSqlMessageId(null));
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isFocusedForSql, message.sql, dispatch]);
 
   const handleViewModeChange = (viewMode: 'table' | 'chart' | 'both') => {
     dispatch(setMessageViewMode({ messageId: message.id, viewMode }));
@@ -227,16 +239,31 @@ export default function MessageCard({ message }: MessageCardProps) {
               Kornit AI Assistant
             </Typography>
           </Box>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-              color: theme.palette.mode === 'dark' ? '#e0f2fe' : '#0f172a',
-              fontWeight: 500,
-            }}
-          >
-            {message.text}
-          </Typography>
+          
+          {/* Show only SQL title when focused */}  
+          {isFocusedForSql ? (
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 2,
+                color: 'primary.main',
+                fontWeight: 600,
+              }}
+            >
+              SQL Query
+            </Typography>
+          ) : (
+            <Typography
+              variant="body1"
+              sx={{
+                mb: 2,
+                color: theme.palette.mode === 'dark' ? '#e0f2fe' : '#0f172a',
+                fontWeight: 500,
+              }}
+            >
+              {message.text}
+            </Typography>
+          )}
 
           {message.sql && (
             <Paper
@@ -247,12 +274,17 @@ export default function MessageCard({ message }: MessageCardProps) {
                   theme.palette.mode === 'dark'
                     ? 'rgba(0, 0, 0, 0.4)'
                     : 'rgba(255, 255, 255, 0.8)',
-                border: `1px solid ${theme.palette.primary.light}`,
+                border: `1px solid ${
+                  isFocusedForSql ? theme.palette.primary.main : theme.palette.primary.light
+                }`,
                 borderRadius: 2,
                 fontFamily: 'monospace',
                 fontSize: '0.9rem',
                 overflowX: 'auto',
                 backdropFilter: 'blur(5px)',
+                boxShadow: isFocusedForSql 
+                  ? `0 0 0 2px ${theme.palette.primary.main}30`
+                  : 'none',
               }}
             >
               <Typography
@@ -268,7 +300,10 @@ export default function MessageCard({ message }: MessageCardProps) {
             </Paper>
           )}
 
-          {/* View mode toggle */}
+          {/* Hide everything below when focused on SQL */}
+          {!isFocusedForSql && (
+            <>
+              {/* View mode toggle */}
           <Box
             sx={{
               mb: 2,
@@ -489,6 +524,8 @@ export default function MessageCard({ message }: MessageCardProps) {
               />
             )}
           </Box>
+            </>
+          )}
         </CardContent>
       </Card>
 

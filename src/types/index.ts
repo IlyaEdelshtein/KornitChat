@@ -3,7 +3,7 @@ export interface Message {
   role: 'user' | 'bot';
   text: string;
   sql?: string;
-  viewMode?: 'table' | 'chart' | 'both';
+  viewMode?: 'table' | 'chart' | 'both' | 'sql';
   datasetKey?: string;
   feedback?: 'like' | 'dislike' | null;
   feedbackComment?: string;
@@ -38,6 +38,12 @@ export interface UIState {
     message: string;
   };
   isTyping: boolean;
+  focusedSqlMessageId: string | null;
+  sqlOnlyView: {
+    isActive: boolean;
+    messageId: string | null;
+    userQuestion: string | null;
+  };
 }
 
 export interface AuthState {

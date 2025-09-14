@@ -9,14 +9,19 @@ import {
   Tooltip,
 } from '@mui/material';
 import {
-  DataObject as SqlIcon,
+  QuestionAnswer as QuestionIcon,
   ContentCopy as CopyIcon,
 } from '@mui/icons-material';
-import { useAppSelector } from '../store';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector, useAppDispatch } from '../store';
+import { setSqlOnlyView } from '../store/uiSlice';
+import { navigateToChatId } from '../utils/navigation';
 import dayjs from 'dayjs';
 
 export default function QueryVerification() {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { byId: messagesById } = useAppSelector((state) => state.messages);
   const { currentChatId, byId: chatsById } = useAppSelector(
     (state) => state.chats
@@ -31,32 +36,62 @@ export default function QueryVerification() {
     }
   };
 
-  // Get all bot messages with SQL queries from the current chat
-  const sqlQueries = React.useMemo(() => {
+  const handleQuestionClick = (chatId: string, botMessageId: string, userQuestion: string) => {
+    // Activate SQL-only view mode
+    dispatch(setSqlOnlyView({
+      isActive: true,
+      messageId: botMessageId,
+      userQuestion: userQuestion,
+    }));
+    // Navigate to the chat
+    navigateToChatId(navigate, chatId);
+  };
+
+  // Get user questions that have corresponding bot responses with SQL queries
+  const verifiedQueries = React.useMemo(() => {
     if (!currentChatId) return [];
 
     const currentChat = chatsById[currentChatId];
 
     if (!currentChat) return [];
 
-    // Get messages only from the current chat
-    const currentChatMessages = currentChat.messageIds
+    // Get all messages from current chat in chronological order
+    const allMessages = currentChat.messageIds
       .map((id) => messagesById[id])
       .filter(Boolean)
-      .filter((message) => message.role === 'bot' && message.sql)
       .sort(
         (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       );
 
-    return currentChatMessages;
+    const questionResponsePairs = [];
+
+    // Find user questions followed by bot responses with SQL
+    for (let i = 0; i < allMessages.length - 1; i++) {
+      const userMessage = allMessages[i];
+      const botMessage = allMessages[i + 1];
+
+      if (
+        userMessage.role === 'user' &&
+        botMessage.role === 'bot' &&
+        botMessage.sql
+      ) {
+        questionResponsePairs.push({
+          userMessage,
+          botMessage,
+        });
+      }
+    }
+
+    // Return in reverse order (newest first)
+    return questionResponsePairs.reverse();
   }, [messagesById, currentChatId, chatsById]);
 
-  if (sqlQueries.length === 0) {
+  if (verifiedQueries.length === 0) {
     return (
       <Box sx={{ p: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <SqlIcon sx={{ mr: 1, color: 'text.secondary' }} />
+          <QuestionIcon sx={{ mr: 1, color: 'text.secondary' }} />
           <Typography variant="h6" color="text.secondary">
             Verified Query
           </Typography>
@@ -66,7 +101,7 @@ export default function QueryVerification() {
           color="text.secondary"
           sx={{ textAlign: 'center' }}
         >
-          No SQL queries yet. Start a conversation to see query history.
+          No verified questions yet. Start a conversation to see verified queries.
         </Typography>
       </Box>
     );
@@ -84,13 +119,13 @@ export default function QueryVerification() {
       {/* Header */}
       <Box sx={{ p: 2, pb: 1, flexShrink: 0 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-          <SqlIcon sx={{ mr: 1, color: 'primary.main' }} />
+          <QuestionIcon sx={{ mr: 1, color: 'primary.main' }} />
           <Typography variant="h6" color="primary.main">
             Verified Query
           </Typography>
         </Box>
         <Typography variant="body2" color="text.secondary">
-          SQL queries from chat responses
+          User questions with verified SQL responses
         </Typography>
       </Box>
 
@@ -106,8 +141,8 @@ export default function QueryVerification() {
           py: 1,
         }}
       >
-        {sqlQueries.map((message, index) => (
-          <Box key={message.id} sx={{ mb: 1 }}>
+        {verifiedQueries.map((pair, index) => (
+          <Box key={pair.userMessage.id} sx={{ mb: 1 }}>
             <Paper
               sx={{
                 width: '100%',
@@ -119,6 +154,7 @@ export default function QueryVerification() {
                 border: `1px solid ${theme.palette.primary.light}`,
                 borderRadius: 1,
                 transition: 'all 0.2s ease-in-out',
+                cursor: 'pointer',
                 '&:hover': {
                   backgroundColor:
                     theme.palette.mode === 'dark'
@@ -132,6 +168,7 @@ export default function QueryVerification() {
                   }`,
                 },
               }}
+              onClick={() => handleQuestionClick(currentChatId!, pair.botMessage.id, pair.userMessage.text)}
             >
               <Box
                 sx={{
@@ -151,7 +188,7 @@ export default function QueryVerification() {
                       letterSpacing: 0.5,
                     }}
                   >
-                    Query #{sqlQueries.length - index}
+                    Question #{verifiedQueries.length - index}
                   </Typography>
                   <Typography
                     variant="caption"
@@ -160,13 +197,16 @@ export default function QueryVerification() {
                       ml: 1,
                     }}
                   >
-                    {dayjs(message.createdAt).format('HH:mm')}
+                    {dayjs(pair.userMessage.createdAt).format('HH:mm')}
                   </Typography>
                 </Box>
-                <Tooltip title="Copy query">
+                <Tooltip title="Copy SQL query">
                   <IconButton
                     size="small"
-                    onClick={() => handleCopyQuery(message.sql!)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopyQuery(pair.botMessage.sql!);
+                    }}
                     sx={{
                       color: 'primary.main',
                       '&:hover': {
@@ -183,20 +223,20 @@ export default function QueryVerification() {
               </Box>
               <Typography
                 variant="body2"
-                component="pre"
                 sx={{
-                  fontFamily: 'monospace',
-                  fontSize: '0.75rem',
                   color: theme.palette.mode === 'dark' ? '#e0f2fe' : '#1e293b',
                   margin: 0,
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word',
                   lineHeight: 1.4,
-                  maxHeight: '100px',
+                  maxHeight: '60px',
                   overflow: 'hidden',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: 'vertical',
                 }}
               >
-                {message.sql}
+                {pair.userMessage.text}
               </Typography>
             </Paper>
           </Box>

@@ -9,6 +9,12 @@ const initialState: UIState = {
     message: '',
   },
   isTyping: false,
+  focusedSqlMessageId: null,
+  sqlOnlyView: {
+    isActive: false,
+    messageId: null,
+    userQuestion: null,
+  },
 };
 
 const uiSlice = createSlice({
@@ -48,6 +54,23 @@ const uiSlice = createSlice({
     setIsTyping: (state, action: PayloadAction<boolean>) => {
       state.isTyping = action.payload;
     },
+    
+    setFocusedSqlMessageId: (state, action: PayloadAction<string | null>) => {
+      state.focusedSqlMessageId = action.payload;
+    },
+    
+    setSqlOnlyView: (
+      state,
+      action: PayloadAction<{
+        isActive: boolean;
+        messageId?: string;
+        userQuestion?: string;
+      }>
+    ) => {
+      state.sqlOnlyView.isActive = action.payload.isActive;
+      state.sqlOnlyView.messageId = action.payload.messageId || null;
+      state.sqlOnlyView.userQuestion = action.payload.userQuestion || null;
+    },
   },
 });
 
@@ -57,6 +80,8 @@ export const {
   setThemeMode,
   setExportBusy,
   setIsTyping,
+  setFocusedSqlMessageId,
+  setSqlOnlyView,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;

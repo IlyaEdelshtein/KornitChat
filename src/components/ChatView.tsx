@@ -3,8 +3,10 @@ import { Box } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store';
 import { setShowEmptyState } from '../store/chatsSlice';
+import { setSqlOnlyView } from '../store/uiSlice';
 import { navigateToChat } from '../utils/navigation';
 import MessageCard from './MessageCard';
+import SqlQueryCard from './SqlQueryCard';
 import Composer from './Composer';
 import EmptyState from './EmptyState';
 
@@ -18,6 +20,7 @@ export default function ChatView() {
     (state) => state.chats
   );
   const { byId: messagesById } = useAppSelector((state) => state.messages);
+  const { sqlOnlyView } = useAppSelector((state) => state.ui);
 
   const currentChat = chatId ? chatsById[chatId] : null;
   const messages =
@@ -134,7 +137,27 @@ export default function ChatView() {
       >
         {messages.length === 0 ? (
           <EmptyState showCreateButton={false} />
+        ) : sqlOnlyView.isActive && sqlOnlyView.messageId ? (
+          // Show only SQL query card when in SQL-only mode
+          <>
+            {(() => {
+              const sqlMessage = messages.find(m => m.id === sqlOnlyView.messageId);
+              if (sqlMessage && sqlMessage.sql) {
+                return (
+                  <SqlQueryCard
+                    key={sqlMessage.id}
+                    message={sqlMessage}
+                    userQuestion={sqlOnlyView.userQuestion || ''}
+                    onClose={() => dispatch(setSqlOnlyView({ isActive: false }))}
+                  />
+                );
+              }
+              return null;
+            })()}
+            <div ref={messagesEndRef} />
+          </>
         ) : (
+          // Show normal message cards
           <>
             {messages.map((message) => (
               <MessageCard key={message.id} message={message} />
@@ -144,10 +167,12 @@ export default function ChatView() {
         )}
       </Box>
 
-      {/* Composer - fixed at bottom */}
-      <Box sx={{ flexShrink: 0 }}>
-        <Composer chatId={currentChat?.id || null} disabled={false} />
-      </Box>
+      {/* Composer - fixed at bottom, hide in SQL-only mode */}
+      {!sqlOnlyView.isActive && (
+        <Box sx={{ flexShrink: 0 }}>
+          <Composer chatId={currentChat?.id || null} disabled={false} />
+        </Box>
+      )}
     </Box>
   );
 }
