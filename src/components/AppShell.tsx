@@ -12,6 +12,7 @@ import {
   Snackbar,
   Alert,
 } from '@mui/material';
+import kornitLogoSmall from '../assets/images/kornit-logo-small.png';
 import {
   Menu as MenuIcon,
   Brightness4,
@@ -55,7 +56,19 @@ export default function AppShell({ children }: AppShellProps) {
 
   const drawer = (
     <Box>
-      <Toolbar>
+      <Toolbar sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box
+          component="img"
+          src={kornitLogoSmall}
+          alt="Kornit Logo"
+          sx={{
+            width: 24,
+            height: 24,
+            flexShrink: 0,
+            borderRadius: '4px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          }}
+        />
         <Typography variant="h6" noWrap component="div">
           Kornit Chat
         </Typography>

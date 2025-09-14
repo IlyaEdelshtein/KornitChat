@@ -15,8 +15,8 @@ import {
   Visibility,
   VisibilityOff,
   Login as LoginIcon,
-  Chat as ChatIcon,
 } from '@mui/icons-material';
+import kornitLogoLarge from '../assets/images/kornit-logo-large.png';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
 import { loginUser, clearError } from '../store/authSlice';
@@ -78,11 +78,18 @@ export default function LoginPage() {
       >
         <CardContent sx={{ p: 4 }}>
           <Box sx={{ textAlign: 'center', mb: 4 }}>
-            <ChatIcon
+            <Box
+              component="img"
+              src={kornitLogoLarge}
+              alt="Kornit Logo"
               sx={{
-                fontSize: 64,
-                color: 'primary.main',
+                width: 96,
+                height: 96,
                 mb: 2,
+                display: 'block',
+                margin: '0 auto 16px auto',
+                borderRadius: '12px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
               }}
             />
             <Typography variant="h4" component="h1" gutterBottom>
