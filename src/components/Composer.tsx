@@ -17,6 +17,7 @@ import {
   setCurrentChat,
   setShowEmptyState,
 } from '../store/chatsSlice';
+import { setSqlOnlyView } from '../store/uiSlice';
 import { useNavigate } from 'react-router-dom';
 import {
   generateMockSql,
@@ -43,6 +44,9 @@ export default function Composer({ chatId, disabled }: ComposerProps) {
     e.preventDefault();
 
     if (!message.trim() || isLoading || disabled) return;
+
+    // Disable SQL-only view when sending new message
+    dispatch(setSqlOnlyView({ isActive: false }));
 
     const userMessage = message.trim();
     setMessage('');

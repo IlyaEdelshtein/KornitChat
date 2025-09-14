@@ -23,6 +23,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store';
 import { createChat, deleteChat, setCurrentChat, setShowEmptyState } from '../store/chatsSlice';
 import { deleteMessagesForChat } from '../store/messagesSlice';
+import { setSqlOnlyView } from '../store/uiSlice';
 import { navigateToChatId, navigateToChat } from '../utils/navigation';
 
 interface ChatListProps {
@@ -41,6 +42,8 @@ export default function ChatList({ onChatSelect }: ChatListProps) {
   const [chatToDelete, setChatToDelete] = useState<string | null>(null);
 
   const handleNewChat = () => {
+    // Disable SQL-only view when creating new chat
+    dispatch(setSqlOnlyView({ isActive: false }));
     const newChatId = dispatch(createChat()).payload.id;
     dispatch(setCurrentChat(newChatId));
     navigateToChatId(navigate, newChatId);
@@ -48,6 +51,8 @@ export default function ChatList({ onChatSelect }: ChatListProps) {
   };
 
   const handleChatSelect = (selectedChatId: string) => {
+    // Disable SQL-only view when selecting different chat
+    dispatch(setSqlOnlyView({ isActive: false }));
     dispatch(setCurrentChat(selectedChatId));
     dispatch(setShowEmptyState(false));
     navigateToChatId(navigate, selectedChatId);

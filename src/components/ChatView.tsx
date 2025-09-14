@@ -31,6 +31,17 @@ export default function ChatView() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length]);
 
+  // Disable SQL-only view when navigating to different chat
+  // Use a ref to track the previous chatId to avoid disabling SQL mode 
+  // when navigating to the same chat (which happens when clicking from QueryVerification)
+  const prevChatIdRef = useRef<string | undefined>();
+  useEffect(() => {
+    if (sqlOnlyView.isActive && prevChatIdRef.current && prevChatIdRef.current !== chatId) {
+      dispatch(setSqlOnlyView({ isActive: false }));
+    }
+    prevChatIdRef.current = chatId;
+  }, [chatId, dispatch, sqlOnlyView.isActive]);
+
   // Handle chat navigation
   useEffect(() => {
     // If no chats exist at all, show empty state

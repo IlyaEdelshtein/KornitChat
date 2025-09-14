@@ -41,7 +41,7 @@ export default function QueryVerification() {
     botMessageId: string,
     userQuestion: string
   ) => {
-    // Activate SQL-only view mode
+    // Always activate SQL-only view mode (even if already active)
     dispatch(
       setSqlOnlyView({
         isActive: true,

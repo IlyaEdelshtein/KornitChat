@@ -20,7 +20,7 @@ import {
   Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { useAppSelector, useAppDispatch } from '../store';
-import { closeSnackbar, setThemeMode } from '../store/uiSlice';
+import { closeSnackbar, setThemeMode, setSqlOnlyView } from '../store/uiSlice';
 import { logout } from '../store/authSlice';
 import ChatList from './ChatList';
 import QueryVerification from './QueryVerification';
@@ -40,10 +40,14 @@ export default function AppShell({ children }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
+    // Disable SQL-only view when toggling mobile drawer
+    dispatch(setSqlOnlyView({ isActive: false }));
     setMobileOpen((prev) => !prev);
   };
 
   const handleThemeToggle = () => {
+    // Disable SQL-only view when changing theme
+    dispatch(setSqlOnlyView({ isActive: false }));
     dispatch(setThemeMode(themeMode === 'light' ? 'dark' : 'light'));
   };
 
@@ -52,6 +56,8 @@ export default function AppShell({ children }: AppShellProps) {
   };
 
   const handleLogout = () => {
+    // Disable SQL-only view when logging out
+    dispatch(setSqlOnlyView({ isActive: false }));
     dispatch(logout());
   };
 
